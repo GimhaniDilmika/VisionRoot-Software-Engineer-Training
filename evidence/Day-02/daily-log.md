@@ -123,7 +123,7 @@ Pull request prepared from `feature/day-02-architecture-and-design` into `main` 
 ---
 
 ### Commit hash:
-`PENDING_COMMIT_HASH`
+`8419ded35d9e670c8e7e3002fdc05dc0b1a6e305` (Short: `8419ded`)
 
 ---
 
