@@ -86,3 +86,4 @@ VisionRoot-Training/
 - **Product Backlog & MoSCoW Prioritization**: Defined MVP vs Post-MVP future enhancements to maintain realistic scope.
 - **Definition of Done (DoD) & Verification Matrix**: Established rigorous standards for testability, code quality, and peer review.
 - **Daily Evidence Record**: Detailed daily learning notes and submission log stored under [`evidence/Day-01/daily-log.md`](evidence/Day-01/daily-log.md).
+
