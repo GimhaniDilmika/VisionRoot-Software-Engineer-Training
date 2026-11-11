@@ -3,7 +3,7 @@
 [![Training Duration](https://img.shields.io/badge/Duration-2%20Weeks%20%2F%2010%20Days-blue.svg)](https://github.com)
 [![Role](https://img.shields.io/badge/Role-Trainee%20Software%20Engineer-green.svg)](https://github.com)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Monolith-orange.svg)](https://github.com)
-[![Status](https://img.shields.io/badge/Status-Day%2001%20Completed-brightgreen.svg)](https://github.com)
+[![Status](https://img.shields.io/badge/Status-Day%2002%20Completed-brightgreen.svg)](https://github.com)
 
 Welcome to the **VisionRoot Trainee Software Engineer** 10-day onboarding repository. This project follows a structured, learn-by-building pathway focused on practical web application development, software architecture, clean code, API engineering, database design, automated testing, security, and technical documentation.
 
@@ -35,7 +35,7 @@ An internal full-stack web application enabling organization employees to submit
 | Day | Topic | Status | Evidence / Deliverables |
 | :--- | :--- | :---: | :--- |
 | **Day 01** | **Requirements and SDLC** | ✅ Completed | [docs/requirements.md](docs/requirements.md), [evidence/Day-01/daily-log.md](evidence/Day-01/daily-log.md) |
-| **Day 02** | **Architecture and System Design** | ⏳ Planned | `docs/architecture.md`, `docs/data-model.md`, `docs/api-contract.md`, ADR-001 |
+| **Day 02** | **Architecture and System Design** | ✅ Completed | [docs/architecture.md](docs/architecture.md), [docs/data-model.md](docs/data-model.md), [docs/api-contract.md](docs/api-contract.md), [ADR-001](docs/decisions/ADR-001-architecture.md), [evidence/Day-02/daily-log.md](evidence/Day-02/daily-log.md) |
 | **Day 03** | **GitHub Workflow & Environment Setup** | ⏳ Planned | Project scaffolding, scripts, `.env.example`, lint/format setup |
 | **Day 04** | **Frontend Architecture & UI** | ⏳ Planned | Next.js screens, forms, state management, UI evidence |
 | **Day 05** | **Backend API & Service Layer** | ⏳ Planned | Express modules, controllers, services, error handling |
@@ -55,12 +55,12 @@ VisionRoot-Training/
 ├── .gitignore                          # Standard git exclusion rules
 ├── docs/                               # Architectural and requirement specifications
 │   ├── requirements.md                 # Problem statement, personas, user stories, backlog
-│   ├── architecture.md                 # (Day 02) Context/container & component diagrams
-│   ├── data-model.md                   # (Day 02) Database schema and ER diagrams
-│   ├── api-contract.md                 # (Day 02) Endpoint contracts and status codes
+│   ├── architecture.md                 # System architecture, C4 diagrams, layer boundaries
+│   ├── data-model.md                   # Database schema, ER diagram, indexing strategy
+│   ├── api-contract.md                 # REST API endpoints, schemas, status codes
 │   ├── deployment.md                   # (Day 09) Deployment guide and runbooks
 │   └── decisions/                      # Architecture Decision Records (ADRs)
-│       └── ADR-001-architecture.md     # (Day 02) Initial architecture decision
+│       └── ADR-001-architecture.md     # ADR-001: Modular Monolith vs alternatives
 ├── frontend/                           # (Day 04) Next.js web client
 ├── backend/                            # (Day 05) Express.js modular monolith backend
 ├── tests/                              # (Day 08) Automated test suites
@@ -73,7 +73,9 @@ VisionRoot-Training/
     │   ├── daily-log.md
     │   ├── backlog-board.md
     │   └── sdlc-learning-notes.md
-    ├── Day-02/                         # Day 02: Architecture artifacts
+    ├── Day-02/                         # Day 02: Architecture artifacts & decision logs
+    │   ├── daily-log.md
+    │   └── PR_DESCRIPTION.md
     └── ...                             # Days 03 - 10
 ```
 
@@ -87,3 +89,13 @@ VisionRoot-Training/
 - **Definition of Done (DoD) & Verification Matrix**: Established rigorous standards for testability, code quality, and peer review.
 - **Daily Evidence Record**: Detailed daily learning notes and submission log stored under [`evidence/Day-01/daily-log.md`](evidence/Day-01/daily-log.md).
 
+---
+
+## 🚀 Day 02 Summary
+
+- **Modular Monolith Architecture**: Designed complete system architecture in [`docs/architecture.md`](docs/architecture.md) with C4 Context/Container diagrams, layer boundary matrix, and an end-to-end request flow walkthrough from browser to database and back.
+- **Data Persistence & ER Model**: Specified relational schema in [`docs/data-model.md`](docs/data-model.md) with Mermaid ER diagram (marking `service_requests` as MVP and audit logs as Post-MVP only), UUID primary keys, enum check constraints, automated `updated_at` trigger, and high-performance B-tree indexes (with actual migration files reserved for Day 06).
+- **REST API Contract**: Fully drafted endpoints in [`docs/api-contract.md`](docs/api-contract.md) with standard success/error envelopes, field validation schemas, status codes (200, 201, 400, 404, 500, 503), and error codes dictionary.
+- **Architecture Decision Record (ADR-001)**: Authored [`docs/decisions/ADR-001-architecture.md`](docs/decisions/ADR-001-architecture.md) justifying the Modular Monolith approach over Microservices, Horizontal Monolith, and Serverless models.
+- **Boundary Clarity**: Documented exact layer responsibilities: **Validation** in Controller/Schema, **Business Rules** in Service, and **Persistence** in Repository.
+- **Daily Evidence Record**: Detailed daily learning notes and trade-off analysis stored under [`evidence/Day-02/daily-log.md`](evidence/Day-02/daily-log.md).
