@@ -365,3 +365,4 @@ All failure requests ($4xx$, $5xx$) return a standardized error object containin
 | `404 Not Found` | Resource does not exist | Specified request UUID not present in database. |
 | `500 Internal Error`| Unhandled server defect| Unexpected unhandled exceptions caught by centralized error middleware. |
 | `503 Unavailable` | Dependency down | Database connection check failure during `/api/health`. |
+

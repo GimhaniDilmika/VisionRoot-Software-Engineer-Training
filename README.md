@@ -94,7 +94,7 @@ VisionRoot-Training/
 ## 🚀 Day 02 Summary
 
 - **Modular Monolith Architecture**: Designed complete system architecture in [`docs/architecture.md`](docs/architecture.md) with C4 Context/Container diagrams, layer boundary matrix, and an end-to-end request flow walkthrough from browser to database and back.
-- **Data Persistence & ER Model**: Specified relational schema in [`docs/data-model.md`](docs/data-model.md) with Mermaid ER diagram, UUID primary keys, enum check constraints, automated `updated_at` trigger, and high-performance B-tree indexes.
+- **Data Persistence & ER Model**: Specified relational schema in [`docs/data-model.md`](docs/data-model.md) with Mermaid ER diagram (marking `service_requests` as MVP and audit logs as Post-MVP only), UUID primary keys, enum check constraints, automated `updated_at` trigger, and high-performance B-tree indexes (with actual migration files reserved for Day 06).
 - **REST API Contract**: Fully drafted endpoints in [`docs/api-contract.md`](docs/api-contract.md) with standard success/error envelopes, field validation schemas, status codes (200, 201, 400, 404, 500, 503), and error codes dictionary.
 - **Architecture Decision Record (ADR-001)**: Authored [`docs/decisions/ADR-001-architecture.md`](docs/decisions/ADR-001-architecture.md) justifying the Modular Monolith approach over Microservices, Horizontal Monolith, and Serverless models.
 - **Boundary Clarity**: Documented exact layer responsibilities: **Validation** in Controller/Schema, **Business Rules** in Service, and **Persistence** in Repository.

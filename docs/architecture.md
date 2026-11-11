@@ -191,7 +191,11 @@ sequenceDiagram
 
 ## 5. Architectural Backend Folder Structure
 
-Following VisionRoot specifications (Page 6 of the training guide), the backend code is structured into modular feature slices:
+Following VisionRoot specifications (Page 6 of the training guide), the backend code is designed into modular feature slices. 
+
+> [!NOTE]
+> **Blueprint Notice:**
+> The folder hierarchy below is the architectural blueprint for implementation across Days 03–06. Adhering to the training guide guideline (*"Do not create empty folders solely to match this picture"*), no placeholder application directories, backend source code, or migration scripts are committed during Day 02.
 
 ```text
 backend/
@@ -254,3 +258,4 @@ backend/
   1. Strict TypeScript interface boundaries (`types.ts`).
   2. Automated ESLint import restrictions disallowing direct database imports outside `repository.ts`.
   3. Continuous pull request reviews using the VisionRoot PR checklist requiring reviewers to verify layer isolation before approving code changes.
+

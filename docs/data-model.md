@@ -24,7 +24,7 @@ erDiagram
         TIMESTAMPTZ updated_at "Record last update timestamp (DEFAULT NOW())"
     }
 
-    REQUEST_AUDIT_LOGS {
+    REQUEST_AUDIT_LOGS_POST_MVP {
         UUID id PK "Log record identifier"
         UUID request_id FK "References SERVICE_REQUESTS(id)"
         VARCHAR(20) old_status "Previous status"
@@ -33,10 +33,13 @@ erDiagram
         TIMESTAMPTZ changed_at "Timestamp of status change"
     }
 
-    SERVICE_REQUESTS ||--o{ REQUEST_AUDIT_LOGS : "tracks status history"
+    SERVICE_REQUESTS ||--o{ REQUEST_AUDIT_LOGS_POST_MVP : "tracks status history (POST-MVP ONLY)"
 ```
 
-> **Note on Scope:** The `SERVICE_REQUESTS` table represents the core **MVP** storage entity. The `REQUEST_AUDIT_LOGS` table demonstrates architectural foresight for post-MVP requirements (US-07) and illustrates foreign-key relationship integrity.
+> [!IMPORTANT]
+> **Strict MVP Scope Boundary Notice:**
+> - **MVP Entity (Must Have for Days 01–10):** `service_requests` is the **only** entity implemented and populated in the MVP.
+> - **Post-MVP Entity (Future Enhancement):** `request_audit_logs` is explicitly marked as **Post-MVP only** (aligning with backlog user story `US-07`). It is documented here strictly as an architectural extension point to prove relational schema viability without requiring a breaking database overhaul in future releases. No audit log tables or code will be provisioned in the MVP.
 
 ---
 
@@ -108,13 +111,15 @@ EXECUTE FUNCTION update_timestamp_column();
 
 ---
 
-## 6. Complete PostgreSQL DDL Script (Migration Reference)
+## 6. PostgreSQL DDL Design Reference (Implementation Reserved for Day 06)
 
-The following idempotent SQL script defines the initial migration (`database/migrations/001_create_service_requests.sql`):
+> [!NOTE]
+> **Implementation Phase Notice:**
+> The following DDL script serves strictly as an **architectural design reference** for Day 02. Per the VisionRoot 10-day roadmap, database provisioning, connection setup, and actual executable migration files (`database/migrations/001_create_service_requests.sql`) will be implemented on **Day 06 — Database and Persistence**. No executable database files or migration scripts are committed during Day 02.
 
 ```sql
--- Migration: 001_create_service_requests.sql
--- Description: Create service_requests table with constraints, indexes, and triggers
+-- Architectural Reference DDL: service_requests schema
+-- (To be applied in database/migrations/ on Day 06)
 
 -- 1. Ensure UUID generation extension is available
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -182,3 +187,4 @@ COMMENT ON COLUMN service_requests.status IS 'Current lifecycle state (OPEN, IN_
    - `updated_at` must always be strictly greater than or equal to `created_at`.
 3. **Deletion Policy:**
    - In accordance with enterprise audit standards, service requests are not hard-deleted in normal operation. Cancelled or discarded requests are moved to the `'CLOSED'` terminal state.
+

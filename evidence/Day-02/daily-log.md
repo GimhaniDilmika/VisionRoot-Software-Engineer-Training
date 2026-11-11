@@ -27,9 +27,9 @@
    - Complete folder structure specification matching the VisionRoot training guide.
    - Explicit "Owns vs Avoids" table for every architectural layer.
 2. **Data Model & Persistence Specification ([`docs/data-model.md`](../../docs/data-model.md)):
-   - Mermaid ER diagram showing `service_requests` and extensible relationships (`request_audit_logs`).
+   - Mermaid ER diagram showing `service_requests` (the sole MVP entity) and an explicit Post-MVP extension point (`request_audit_logs_post_mvp`).
    - Column specifications, constraints, enum definitions, and B-tree indexing strategy.
-   - Complete, idempotent PostgreSQL DDL migration script with triggers for automated `updated_at` management.
+   - Comprehensive PostgreSQL DDL design reference with trigger for automated `updated_at` management (with executable migration files reserved for Day 06 per roadmap).
 3. **REST API Contract & Specification ([`docs/api-contract.md`](../../docs/api-contract.md)):
    - Unified success (`{ success: true, data: ... }`) and error (`{ success: false, error: ... }`) JSON response envelopes.
    - Full specifications for all 5 endpoints:

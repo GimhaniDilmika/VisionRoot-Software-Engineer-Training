@@ -86,3 +86,4 @@ We will re-evaluate this architectural decision if:
 1. System traffic exceeds 500,000 requests/day, causing CPU/memory scaling bottlenecks that require separate horizontal scaling for specific subcomponents.
 2. The engineering organization scales to multiple autonomous teams (e.g., 3+ squads) requiring independent release cadences and decoupled repository ownership.
 3. Complex long-running asynchronous background processing (such as high-volume video processing or machine learning inference) demands isolated worker runtimes.
+

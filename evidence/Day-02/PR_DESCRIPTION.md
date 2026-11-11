@@ -1,6 +1,6 @@
 ## What changed?
 - Created `docs/architecture.md`: Comprehensive system architecture specification including C4 Context/Container diagrams, modular monolith layer diagram, end-to-end request flow walkthrough, and layer responsibility boundaries ("Owns vs Avoids").
-- Created `docs/data-model.md`: Database persistence specification including Mermaid ER diagram, table schemas, column invariants, enum checks, indexing strategy, and complete PostgreSQL DDL migration script.
+- Created `docs/data-model.md`: Database persistence specification including Mermaid ER diagram (with `service_requests` as core MVP entity and audit logs explicitly marked Post-MVP only), table schemas, column invariants, enum checks, indexing strategy, and reference PostgreSQL DDL (executable migrations reserved for Day 06).
 - Created `docs/api-contract.md`: REST API contract specifying request/response JSON schemas, unified success/error envelopes, error codes dictionary, and detailed specifications for all 5 endpoints (`POST /api/requests`, `GET /api/requests`, `GET /api/requests/:id`, `PATCH /api/requests/:id/status`, `GET /api/health`).
 - Created `docs/decisions/ADR-001-architecture.md`: Architecture Decision Record justifying the Modular Monolith approach and comparing against Microservices, Traditional Layered Monolith, and Serverless.
 - Created `evidence/Day-02/daily-log.md`: Detailed daily evidence record covering learning notes, completed tasks, trade-off and known risk explanations, problem resolution, and the Day 02 review question.
@@ -28,3 +28,4 @@
 - [x] Server-side validation and errors are handled (defined in API contract)
 - [x] No secrets or debug code are included
 - [x] Documentation and evidence are updated
+
