@@ -403,3 +403,4 @@ A requirement or user story is considered **Done** only when all of the followin
 | **FR-03 / US-03** (Details) | Automated API Test | Issue `GET /api/requests/{valid_id}` and `GET /api/requests/{unknown_id}` | 200 OK with full payload for valid; 404 Not Found for unknown. |
 | **FR-04 / US-04** (State Transitions) | Unit Test (Service) & API Integration Test | Attempt `OPEN` $\rightarrow$ `IN_PROGRESS` (valid), then `OPEN` $\rightarrow$ `RESOLVED` (invalid) | Valid returns 200; Invalid returns 400 with transition error message. |
 | **FR-06 / US-06** (Health Check) | Automated Integration Test | Issue `GET /api/health` with DB up vs DB disconnected | 200 OK healthy; 503 Service Unavailable when DB is down. |
+

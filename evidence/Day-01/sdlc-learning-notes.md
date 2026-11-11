@@ -95,3 +95,4 @@ A feature is **not done** when it merely works on a developer's local machine. I
 - Automated tests pass.
 - Architecture layer boundaries are maintained.
 - Code review is completed with documented evidence and clean commit history.
+
