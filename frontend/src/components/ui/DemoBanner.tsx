@@ -1,34 +1,44 @@
 import React from 'react';
 
-interface DemoBannerProps {
-  message?: string;
-}
-
-export const DemoBanner: React.FC<DemoBannerProps> = ({
-  message = 'Demo Mode — Data displayed below is local mock data for UI development. The backend API (Day 05) and PostgreSQL database (Day 06) are not yet connected.',
-}) => (
+export const DemoBanner: React.FC = () => (
   <div
-    className="alert alert-warning"
     role="status"
-    aria-live="polite"
-    style={{ marginBottom: '1.5rem' }}
+    style={{
+      backgroundColor: '#FFFBEB',
+      borderBottom: '1px solid #FCD34D',
+      padding: '0.5rem 0',
+    }}
   >
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      aria-hidden="true"
-      style={{ flexShrink: 0, marginTop: '1px' }}
+    <div
+      className="container"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        fontSize: '0.8125rem',
+        color: '#92400E',
+      }}
     >
-      <path
-        fillRule="evenodd"
-        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-        clipRule="evenodd"
-      />
-    </svg>
-    <span>
-      <strong>⚠ Demo Mode:</strong> {message}
-    </span>
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        style={{ flexShrink: 0 }}
+      >
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+      <span>
+        <strong>Demo Mode:</strong> All data is stored in memory only and resets on page reload.
+        No database connection is active until Day 06.
+      </span>
+    </div>
   </div>
 );

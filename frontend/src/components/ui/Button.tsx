@@ -2,12 +2,14 @@ import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   children: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
+  size = 'md',
   isLoading = false,
   disabled,
   children,
@@ -15,12 +17,11 @@ export const Button: React.FC<ButtonProps> = ({
   type = 'button',
   ...rest
 }) => {
-  const variantClass = `btn-${variant}`;
-
+  const sizeClass = size === 'sm' ? 'btn-sm' : size === 'lg' ? 'btn-lg' : '';
   return (
     <button
       type={type}
-      className={`btn ${variantClass} ${className}`}
+      className={`btn btn-${variant} ${sizeClass} ${className}`.trim()}
       disabled={disabled || isLoading}
       aria-busy={isLoading}
       {...rest}
@@ -30,16 +31,17 @@ export const Button: React.FC<ButtonProps> = ({
           <span
             style={{
               display: 'inline-block',
-              width: '14px',
-              height: '14px',
+              width: '13px',
+              height: '13px',
               border: '2px solid currentColor',
               borderRightColor: 'transparent',
               borderRadius: '50%',
               animation: 'spin 0.75s linear infinite',
+              flexShrink: 0,
             }}
             aria-hidden="true"
           />
-          <span>Processing...</span>
+          <span>Processing…</span>
         </>
       ) : (
         children

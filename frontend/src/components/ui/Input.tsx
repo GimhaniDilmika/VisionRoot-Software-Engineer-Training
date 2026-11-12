@@ -1,54 +1,58 @@
 import React from 'react';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  id: string;
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
   error?: string;
   helperText?: string;
-  required?: boolean;
+  id: string;
 }
 
 export const Input: React.FC<InputProps> = ({
   label,
-  id,
   error,
   helperText,
-  required = false,
+  id,
   className = '',
+  required,
   ...rest
 }) => {
-  const errorId = error ? `${id}-error` : undefined;
-  const helperId = helperText ? `${id}-helper` : undefined;
-  const describedBy = [errorId, helperId].filter(Boolean).join(' ') || undefined;
+  const errorId = `${id}-error`;
+  const helpId = `${id}-help`;
+  const describedBy = [error ? errorId : '', helperText && !error ? helpId : '']
+    .filter(Boolean)
+    .join(' ') || undefined;
 
   return (
     <div className="form-group">
-      <label htmlFor={id} className="form-label">
-        {label}
-        {required && <span className="required-indicator" aria-hidden="true">*</span>}
-      </label>
+      {label && (
+        <label htmlFor={id} className="form-label">
+          {label}
+          {required && (
+            <span className="form-required" aria-hidden="true">*</span>
+          )}
+        </label>
+      )}
       <input
         id={id}
-        required={required}
-        aria-required={required}
-        aria-invalid={Boolean(error)}
+        className={`form-input${error ? ' has-error' : ''} ${className}`.trim()}
+        aria-invalid={error ? 'true' : 'false'}
         aria-describedby={describedBy}
-        className={`form-input ${error ? 'has-error' : ''} ${className}`}
+        required={required}
         {...rest}
       />
-      {error && (
-        <div id={errorId} className="form-error" role="alert">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+      {error ? (
+        <p id={errorId} role="alert" className="form-error">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-          <span>{error}</span>
-        </div>
-      )}
-      {helperText && !error && (
-        <div id={helperId} className="form-helper">
-          {helperText}
-        </div>
-      )}
+          {error}
+        </p>
+      ) : helperText ? (
+        <p id={helpId} className="form-helper">{helperText}</p>
+      ) : null}
     </div>
   );
 };

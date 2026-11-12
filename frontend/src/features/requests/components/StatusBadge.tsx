@@ -5,46 +5,58 @@ interface StatusBadgeProps {
   status: RequestStatus;
 }
 
-const statusConfig: Record<RequestStatus, { label: string; style: React.CSSProperties }> = {
+const statusConfig: Record<
+  RequestStatus,
+  { label: string; dotColor: string; textColor: string; bg: string; border: string }
+> = {
   OPEN: {
     label: 'Open',
-    style: {
-      color: 'var(--status-open-text)',
-      backgroundColor: 'var(--status-open-bg)',
-      border: '1px solid var(--status-open-border)',
-    },
+    dotColor: '#3B82F6',
+    textColor: '#1D4ED8',
+    bg: '#EFF6FF',
+    border: '#BFDBFE',
   },
   IN_PROGRESS: {
     label: 'In Progress',
-    style: {
-      color: 'var(--status-inprogress-text)',
-      backgroundColor: 'var(--status-inprogress-bg)',
-      border: '1px solid var(--status-inprogress-border)',
-    },
+    dotColor: '#F59E0B',
+    textColor: '#92400E',
+    bg: '#FFFBEB',
+    border: '#FCD34D',
   },
   RESOLVED: {
     label: 'Resolved',
-    style: {
-      color: 'var(--status-resolved-text)',
-      backgroundColor: 'var(--status-resolved-bg)',
-      border: '1px solid var(--status-resolved-border)',
-    },
+    dotColor: '#10B981',
+    textColor: '#065F46',
+    bg: '#ECFDF5',
+    border: '#6EE7B7',
   },
   CLOSED: {
     label: 'Closed',
-    style: {
-      color: 'var(--status-closed-text)',
-      backgroundColor: 'var(--status-closed-bg)',
-      border: '1px solid var(--status-closed-border)',
-    },
+    dotColor: '#94A3B8',
+    textColor: '#475569',
+    bg: '#F1F5F9',
+    border: '#CBD5E1',
   },
 };
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  const config = statusConfig[status];
+  const cfg = statusConfig[status];
   return (
-    <span className="badge" style={config.style} aria-label={`Status: ${config.label}`}>
-      {config.label}
+    <span
+      className="badge"
+      style={{
+        color: cfg.textColor,
+        backgroundColor: cfg.bg,
+        border: `1px solid ${cfg.border}`,
+      }}
+      aria-label={`Status: ${cfg.label}`}
+    >
+      <span
+        className="badge-dot"
+        style={{ backgroundColor: cfg.dotColor }}
+        aria-hidden="true"
+      />
+      {cfg.label}
     </span>
   );
 };
