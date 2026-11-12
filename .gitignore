@@ -1,27 +1,50 @@
+# ==============================================================================
+# VisionRoot Service Request Management System — .gitignore
+# ==============================================================================
+
 # Dependencies
 node_modules/
 .pnp
 .pnp.js
 
-# Testing and coverage
-coverage/
-*.lcov
-.nyc_output
-
-# Production builds
+# Production and Compiler Builds
 dist/
 build/
 .next/
 out/
+*.tsbuildinfo
 
-# Environment files and credentials
+# Environment variables and secrets (Strictly prevent credential leaks)
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Allow example templates to be committed
+!.env.example
+!**/.env.example
+
+# Certificates, Keys, and Tokens
 *.pem
 *.key
+*.cert
+*.pfx
+*.pkcs12
+
+# Testing and coverage
+coverage/
+*.lcov
+.nyc_output
 
 # Logs
 logs/
@@ -31,7 +54,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# OS and Editor files
+# Operating System and IDE Caches
 .DS_Store
 Thumbs.db
 .vscode/
@@ -42,9 +65,8 @@ Thumbs.db
 *.sln
 *.sw?
 
-# Temporary and cache
+# Temporary files and caches
 .cache/
 .eslintcache
 tmp/
 temp/
-
