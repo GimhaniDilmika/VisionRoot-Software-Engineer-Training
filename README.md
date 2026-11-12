@@ -3,7 +3,7 @@
 [![Training Duration](https://img.shields.io/badge/Duration-2%20Weeks%20%2F%2010%20Days-blue.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Role](https://img.shields.io/badge/Role-Trainee%20Software%20Engineer-green.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Monolith-orange.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
-[![Status](https://img.shields.io/badge/Status-Day%2003%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
+[![Status](https://img.shields.io/badge/Status-Day%2004%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Node Version](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-339933.svg?logo=nodedotjs)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg?logo=typescript)](https://www.typescriptlang.org)
 
@@ -74,12 +74,19 @@ VisionRoot-Training/
 │   ├── .env.example                    # Frontend environment template
 │   └── src/
 │       └── app/
-│           ├── layout.tsx              # Root HTML layout
-│           └── page.tsx                # Initial environment verification landing page
+│           ├── layout.tsx              # Root HTML layout (imports global CSS)
+│           ├── page.tsx                # Landing home page with hero and CTA buttons
+│           └── requests/
+│               ├── page.tsx            # Request list with status filter tabs
+│               ├── new/
+│               │   └── page.tsx        # Create new request form page
+│               └── [id]/
+│                   └── page.tsx        # Request detail page (US-03)
 └── evidence/                           # Daily proof-of-work, test outputs & audit logs
     ├── Day-01/                         # Day 01 evidence, backlog board & SDLC notes
     ├── Day-02/                         # Day 02 evidence, PR description & decision audit
-    └── Day-03/                         # Day 03 evidence, tool outputs & PR description
+    ├── Day-03/                         # Day 03 evidence, tool outputs & PR description
+    └── Day-04/                         # Day 04 evidence, UI screenshots & PR description
 ```
 
 ---
@@ -165,6 +172,19 @@ Invoke-RestMethod -Uri "http://localhost:5000/api/health"
 ### 3. Verify Frontend in Browser
 Open [http://localhost:3000](http://localhost:3000) in your web browser. You should see the **VisionRoot Service Request Management System — Environment Initialized** confirmation page.
 
+### 4. Frontend Application Routes (Day 04)
+
+After running `npm run dev:frontend`, the following routes are available:
+
+| Route | Description |
+| :--- | :--- |
+| `http://localhost:3000` | Landing home page with hero section and navigation |
+| `http://localhost:3000/requests` | Service request list with status filter tabs |
+| `http://localhost:3000/requests/new` | Create new service request form |
+| `http://localhost:3000/requests/[id]` | Full detail view for a single request |
+
+> **Demo Mode:** All Day 04 frontend pages use in-memory mock data. No data is persisted to a PostgreSQL database until Day 06.
+
 ---
 
 ## ⚠️ Common Setup Troubleshooting
@@ -222,7 +242,7 @@ gitGraph
 | **Day 01** | **Requirements and SDLC** | ✅ Completed | [docs/requirements.md](docs/requirements.md), [evidence/Day-01/daily-log.md](evidence/Day-01/daily-log.md) |
 | **Day 02** | **Architecture and System Design** | ✅ Completed | [docs/architecture.md](docs/architecture.md), [docs/data-model.md](docs/data-model.md), [docs/api-contract.md](docs/api-contract.md), [ADR-001](docs/decisions/ADR-001-architecture.md), [evidence/Day-02/daily-log.md](evidence/Day-02/daily-log.md) |
 | **Day 03** | **GitHub Workflow & Environment Setup** | ✅ Completed | [package.json](package.json), [backend/](backend/), [frontend/](frontend/), [evidence/Day-03/daily-log.md](evidence/Day-03/daily-log.md) |
-| **Day 04** | **Frontend Architecture & UI** | ⏳ Planned | Next.js screens, forms, state management, UI evidence |
+| **Day 04** | **Frontend Architecture & UI** | ✅ Completed | [evidence/Day-04/daily-log.md](evidence/Day-04/daily-log.md), [evidence/Day-04/PR_DESCRIPTION.md](evidence/Day-04/PR_DESCRIPTION.md) |
 | **Day 05** | **Backend API & Service Layer** | ⏳ Planned | Express modules, controllers, services, error handling |
 | **Day 06** | **Database & Persistence** | ⏳ Planned | PostgreSQL schema, migrations, repository integration |
 | **Day 07** | **Full-Stack Integration & Business Workflows**| ⏳ Planned | End-to-end integration, status transition enforcement |
@@ -256,3 +276,14 @@ gitGraph
 - **Verification Commands**: Confirmed that `type-check:backend`, `type-check:frontend`, `build:backend`, and `build:frontend` compile with 0 errors. Verified live Express status and health endpoints (`/` and `/api/health`).
 - **Developer Onboarding Runbook**: Documented PowerShell setup commands, troubleshooting, and Git workflow in `README.md`.
 - **Daily Evidence Record**: Complete audit output, verification logs, and PR notes stored under [`evidence/Day-03/daily-log.md`](evidence/Day-03/daily-log.md).
+
+### Day 04 Summary
+- **Feature-Based Frontend Architecture**: Organised the Next.js frontend into a clean `features/requests/` domain structure covering components, services, types, and validation, alongside a shared `components/ui/` and `components/layout/` layer.
+- **Four Application Routes**: Implemented the landing home page (`/`), request list page (`/requests`), create request page (`/requests/new`), and request detail page (`/requests/[id]`).
+- **Full UI State Coverage**: Every page handles loading (skeleton animation), error (alert banner), empty (friendly message), and populated data states explicitly and accessibly.
+- **Day 01-Compliant Validation**: `requestValidation.ts` enforces all data dictionary rules — title 5–100 chars, description 10–1000 chars, category and priority enums — with field-level error messages and programmatic focus management.
+- **Mock Data Strategy**: `mockRequestService` mirrors the full `requestApi` interface with simulated network delays and 5 seed records. All pages show a **Demo Mode** banner. Data is never implied as persisted to a database.
+- **CSS Design Token System**: Built a full token system with `--color-primary`, `--status-*`, `--priority-*` CSS custom properties and component utility classes (`.card`, `.btn`, `.badge`, `.alert`, `.form-*`).
+- **Keyboard Accessibility**: All form fields are labelled with `htmlFor`/`id`, use `aria-invalid`, `aria-describedby`, `aria-live`, and `aria-pressed`. Submit button uses `aria-busy` during loading.
+- **Verified Build**: `npm run type-check:frontend` → 0 errors. `npm run build:frontend` → 5 routes compiled, 0 errors. `git diff --cached --check` → 0 whitespace violations.
+- **Daily Evidence Record**: Full learning notes, verification output, decisions, and PR description stored under [`evidence/Day-04/daily-log.md`](evidence/Day-04/daily-log.md).
