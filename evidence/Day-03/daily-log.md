@@ -199,6 +199,7 @@ Prepared for supervisor review (`feature/day-03-github-environment-setup` $\righ
 ### Commit hash:
 - `94028b5a0fb7042562ec872da104b281cfc6fe5d` (Short: `94028b5` — Scaffolding, dependencies & environment templates)
 - `a649c7ee1cf401d5dd5ea391ad31509b80c1d1ff` (Short: `a649c7e` — README runbooks & Day 03 evidence)
+- `9dbfd5cf8a1e4e7313de5b0af81ddd069efaaf24` (Short: `9dbfd5c` — Manual verification & screenshot references)
 
 ---
 
