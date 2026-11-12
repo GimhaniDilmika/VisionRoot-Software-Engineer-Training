@@ -129,7 +129,11 @@ Invoke-RestMethod -Uri "http://localhost:5000/api/health"
 # }
 ```
 
-#### 5. Tracked Files & Secret Scan:
+#### 5. Trainee Manual Verification Results:
+- **Frontend UI (`http://localhost:3000`):** Manually accessed the Next.js client via web browser. Verified that the landing page renders cleanly, displays the VisionRoot project header, shows "Frontend Environment Status: Initialized", and produces zero runtime or console errors.
+- **Backend API Health Probe (`http://localhost:5000/api/health`):** Manually requested the health endpoint via browser. Verified that the Express backend returns a valid `200 OK` JSON response with `status: "healthy"`, server uptime, and timestamp.
+
+#### 6. Tracked Files & Secret Scan:
 ```powershell
 git ls-files | Select-String "\.env"
 # Result: Only .env.example templates tracked (.env.example, backend/.env.example, frontend/.env.example)
@@ -138,12 +142,18 @@ git ls-files | Select-String "\.env"
 
 ---
 
-### Screenshot & Repository Tree Instructions:
-To capture and inspect the repository tree representation in Windows PowerShell:
-```powershell
-Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch "node_modules|\.next|dist|\.git" } | Select-Object -ExpandProperty FullName
-```
-This confirms clean physical folder structure without unneeded empty placeholders.
+### Screenshot & Visual Evidence References:
+
+Visual proof-of-work captures for Day 03 verification are stored in this directory:
+- **Frontend Running Verification:** [frontend-localhost-3000.png](frontend-localhost-3000.png)  
+  *Captures Next.js frontend rendering at `http://localhost:3000`.*
+- **Backend Health Check Verification:** [backend-health-endpoint.png](backend-health-endpoint.png)  
+  *Captures Express API returning healthy JSON response at `http://localhost:5000/api/health`.*
+- **Repository Tree Directory Trace:**
+  ```powershell
+  Get-ChildItem -Recurse -File | Where-Object { $_.FullName -notmatch "node_modules|\.next|dist|\.git" } | Select-Object -ExpandProperty FullName
+  ```
+  *Confirms clean physical folder structure without unneeded empty placeholders.*
 
 ---
 

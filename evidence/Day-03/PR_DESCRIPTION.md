@@ -14,7 +14,7 @@
 ## How was it tested?
 - [x] Unit tests / Type checks (`npm run type-check:backend` and `npm run type-check:frontend` passed with 0 errors)
 - [x] Integration tests / Builds (`npm run build:backend` and `npm run build:frontend` compiled with 0 errors)
-- [x] Manual verification (Bootstrapped backend server on port 5000; probed `GET /` and `GET /api/health` returning HTTP 200 OK)
+- [x] Manual verification (Frontend verified running at http://localhost:3000; Backend verified returning healthy JSON at http://localhost:5000/api/health)
 - [x] Lint / format checks (`tsc --noEmit` clean across all workspaces)
 
 ## Evidence
@@ -23,6 +23,7 @@
 - Security Templates: `.env.example`, `backend/.env.example`, `frontend/.env.example`, `.gitignore`
 - Runbook & Roadmap: `README.md`
 - Daily Evidence: `evidence/Day-03/daily-log.md`
+- Visual Proof: `evidence/Day-03/frontend-localhost-3000.png`, `evidence/Day-03/backend-health-endpoint.png`
 
 ## Risks and limitations
 - No domain request management features or database tables were created in Day 03; features will be built systematically starting on Day 04 (Frontend UI) and Day 05 (Backend API).
@@ -32,3 +33,4 @@
 - [x] Server-side validation and errors are handled (scaffolded health endpoints)
 - [x] No secrets or debug code are included
 - [x] Documentation and evidence are updated
+
