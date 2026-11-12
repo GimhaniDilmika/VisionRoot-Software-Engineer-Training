@@ -187,7 +187,8 @@ Prepared for supervisor review (`feature/day-03-github-environment-setup` $\righ
 ---
 
 ### Commit hash:
-`PENDING_COMMIT_HASH`
+- `94028b5a0fb7042562ec872da104b281cfc6fe5d` (Short: `94028b5` — Scaffolding, dependencies & environment templates)
+- `a649c7ee1cf401d5dd5ea391ad31509b80c1d1ff` (Short: `a649c7e` — README runbooks & Day 03 evidence)
 
 ---
 
