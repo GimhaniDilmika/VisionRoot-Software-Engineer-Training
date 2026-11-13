@@ -291,7 +291,7 @@ All failure requests ($4xx$, $5xx$) return a standardized error object containin
   "success": false,
   "error": {
     "code": "INVALID_STATE_TRANSITION",
-    "message": "Cannot transition request from 'OPEN' directly to 'RESOLVED'. Allowed target statuses: 'IN_PROGRESS', 'CLOSED'."
+    "message": "Cannot transition request from 'OPEN' directly to 'RESOLVED'. Allowed target statuses: 'IN_PROGRESS'."
   },
   "timestamp": "2026-11-12T00:26:00.000Z"
 }
