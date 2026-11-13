@@ -1,51 +1,35 @@
-import express, { Request, Response } from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+/**
+ * Server Entry Point — Day 05
+ * Imports the configured Express app and starts the HTTP listener.
+ * Handles graceful shutdown signals.
+ */
 
-// Load environment variables from .env file if available
-dotenv.config();
+import app from './app';
 
-const app = express();
 const PORT = process.env.PORT || 5000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true,
-}));
-app.use(express.json());
-
-// Root endpoint - Environment readiness check
-app.get('/', (_req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    message: 'VisionRoot Service Request Management System API is running',
-    environment: NODE_ENV,
-    timestamp: new Date().toISOString(),
-  });
+const server = app.listen(PORT, () => {
+  console.log(
+    `[VisionRoot Backend] Server initialized in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
+  );
+  console.log(
+    `[VisionRoot Backend] Health check: http://localhost:${PORT}/api/health`
+  );
+  console.log(
+    `[VisionRoot Backend] API base:     http://localhost:${PORT}/api/requests`
+  );
 });
 
-// Basic health check endpoint placeholder
-app.get('/api/health', (_req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      status: 'healthy',
-      uptime_seconds: Math.floor(process.uptime()),
-      timestamp: new Date().toISOString(),
-      environment: NODE_ENV,
-    },
-  });
-});
-
-// Start server only when directly run
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`[VisionRoot Backend] Server initialized in ${NODE_ENV} mode on port ${PORT}`);
-    console.log(`[VisionRoot Backend] Health check available at http://localhost:${PORT}/api/health`);
+// Graceful shutdown
+function shutdown(signal: string): void {
+  console.log(`\n[VisionRoot Backend] Received ${signal}. Shutting down gracefully...`);
+  server.close(() => {
+    console.log('[VisionRoot Backend] Server closed.');
+    process.exit(0);
   });
 }
 
-export default app;
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
 
+export default server;
