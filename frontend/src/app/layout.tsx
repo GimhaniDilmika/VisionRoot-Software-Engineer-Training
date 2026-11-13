@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/globals.css';
 
 export const metadata = {
   title: 'VisionRoot — Service Request Management System',
@@ -12,10 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{ fontFamily: 'system-ui, -apple-system, sans-serif', margin: 0, padding: 0 }}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
-
