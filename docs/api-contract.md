@@ -1,11 +1,28 @@
 # Service Request Management System — REST API Contract & Specification
 
-**Document Version:** 1.0.0  
-**Phase:** Day 02 — Architecture & System Design  
-**Author:** Trainee Software Engineer, VisionRoot (Pvt) Ltd  
-**Protocol:** HTTP/1.1 over TLS (HTTPS)  
-**Data Format:** JSON (`Content-Type: application/json; charset=utf-8`)  
-**Base URL:** `http://localhost:5000/api`  
+**Document Version:** 1.1.0
+**Phase:** Day 05 — Backend API & Service Layer (updated from Day 02)
+**Author:** Trainee Software Engineer, VisionRoot (Pvt) Ltd
+**Protocol:** HTTP/1.1 over TLS (HTTPS)
+**Data Format:** JSON (`Content-Type: application/json; charset=utf-8`)
+**Base URL:** `http://localhost:5000/api`
+
+> **Day 05 Implementation Note:**
+> All five endpoints listed below are fully implemented and tested.
+> Persistence uses an in-memory store with 5 seed records (PostgreSQL integration deferred to Day 06).
+> `limit` and `offset` query parameters are documented for future implementation but not yet enforced.
+
+### Status Lifecycle — Strict Linear State Machine
+
+```
+OPEN ──→ IN_PROGRESS ──→ RESOLVED ──→ CLOSED
+```
+
+- Each status may only advance to the **next** state in the sequence.
+- **No skipping:** OPEN cannot jump to RESOLVED or CLOSED directly.
+- **No backward transitions:** IN_PROGRESS cannot return to OPEN.
+- **Terminal state:** CLOSED allows no further transitions.
+- Invalid transitions return HTTP `400` with error code `INVALID_STATE_TRANSITION`.
 
 ---
 

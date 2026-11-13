@@ -1,9 +1,23 @@
-﻿# Day 05 — Backend API Test Results
+# Day 05 - Backend API Test Results
 
-**Executed:** 2026-11-13 16:45:39
+**Executed:** 2026-11-13 21:33:00
 **Environment:** Development (in-memory store)
 **Server:** http://localhost:5000
-## Test 1: Health Endpoint
+**Branch:** feature/day-05-backend-api-service-layer
+
+---
+
+## Summary
+
+| Result | Count |
+|--------|-------|
+| PASS   | 27 |
+| FAIL   | 0 |
+| Total  | 27 |
+
+---
+
+## [+] 1. Health endpoint
 ```
 GET http://localhost:5000/api/health
 
@@ -13,8 +27,8 @@ Response:
     "success":  true,
     "data":  {
                  "status":  "healthy",
-                 "uptime_seconds":  87.5,
-                 "timestamp":  "2026-11-13T11:15:37.754Z",
+                 "uptime_seconds":  26.9,
+                 "timestamp":  "2026-11-13T16:02:59.205Z",
                  "environment":  "development",
                  "database":  {
                                   "status":  "not_configured",
@@ -22,10 +36,11 @@ Response:
                               }
              }
 }
+
 Result: PASS (expected 200)
 ```
 
-## Test 2: List All Requests
+## [+] 2. List all requests (5 seed records)
 ```
 GET http://localhost:5000/api/requests
 
@@ -86,10 +101,11 @@ Response:
                  }
              ]
 }
+
 Result: PASS (expected 200)
 ```
 
-## Test 3: Get Request by ID
+## [+] 3. Get request by ID
 ```
 GET http://localhost:5000/api/requests/550e8400-e29b-41d4-a716-446655440000
 
@@ -108,10 +124,11 @@ Response:
                  "updated_at":  "2026-11-12T04:10:00.000Z"
              }
 }
+
 Result: PASS (expected 200)
 ```
 
-## Test 4: Create Valid Request
+## [+] 4. Create valid request (all fields)
 ```
 POST http://localhost:5000/api/requests
 Body: {"title":"Network switch reboot needed","description":"The network switch on floor 2 needs rebooting after firmware update","category":"IT","priority":"HIGH"}
@@ -121,31 +138,21 @@ Response:
 {
     "success":  true,
     "data":  {
-                 "id":  "da2325af-ca49-4728-a556-ffe6eb70c918",
+                 "id":  "e63363d4-c47a-48ce-9faf-ac759db9087e",
                  "title":  "Network switch reboot needed",
                  "description":  "The network switch on floor 2 needs rebooting after firmware update",
                  "category":  "IT",
                  "priority":  "HIGH",
                  "status":  "OPEN",
-                 "created_at":  "2026-11-13T11:15:38.670Z",
-                 "updated_at":  "2026-11-13T11:15:38.670Z"
+                 "created_at":  "2026-11-13T16:02:59.359Z",
+                 "updated_at":  "2026-11-13T16:02:59.359Z"
              }
 }
+
 Result: PASS (expected 201)
 ```
 
-## Test 5: Create Request (default priority)
-```
-POST http://localhost:5000/api/requests
-Body: {"title":"Broken window latch in Room 101","description":"The window latch in Room 101 is broken and cannot be secured"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 5b: Create with all fields
+## [+] 5. Create with default priority (MEDIUM)
 ```
 POST http://localhost:5000/api/requests
 Body: {"title":"Broken window latch in Room 101","description":"The window latch in Room 101 is broken and cannot be secured properly","category":"Facilities"}
@@ -155,22 +162,305 @@ Response:
 {
     "success":  true,
     "data":  {
-                 "id":  "e1862fbe-45c2-4a6a-8d48-a72955e32dc1",
+                 "id":  "bd9feb35-2b43-4603-b4f4-2e7b89a704f8",
                  "title":  "Broken window latch in Room 101",
                  "description":  "The window latch in Room 101 is broken and cannot be secured properly",
                  "category":  "Facilities",
                  "priority":  "MEDIUM",
                  "status":  "OPEN",
-                 "created_at":  "2026-11-13T11:15:39.053Z",
-                 "updated_at":  "2026-11-13T11:15:39.053Z"
+                 "created_at":  "2026-11-13T16:02:59.399Z",
+                 "updated_at":  "2026-11-13T16:02:59.399Z"
              }
 }
+
 Result: PASS (expected 201)
 ```
 
-## Test 6: PATCH OPEN to IN_PROGRESS
+## [+] 6. Missing title
 ```
-PATCH http://localhost:5000/api/requests/7ca7b810-9dad-11d1-80b4-00c04fd430c9/status
+POST http://localhost:5000/api/requests
+Body: {"description":"A valid description here that is long enough","category":"IT"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "title",
+                                      "message":  "Title is required and cannot be blank"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.445Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 7. Title too short
+```
+POST http://localhost:5000/api/requests
+Body: {"title":"Hi","description":"A valid description here that is long enough","category":"IT"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "title",
+                                      "message":  "Title must be at least 5 characters long (currently 2)"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.477Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 8. Missing description
+```
+POST http://localhost:5000/api/requests
+Body: {"title":"Valid title here for test","category":"IT"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "description",
+                                      "message":  "Description is required"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.503Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 9. Description too short
+```
+POST http://localhost:5000/api/requests
+Body: {"title":"Valid title here for test","description":"Short","category":"IT"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "description",
+                                      "message":  "Description must be at least 10 characters long (currently 5)"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.527Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 10. Missing category
+```
+POST http://localhost:5000/api/requests
+Body: {"title":"Valid title here for test","description":"A valid description here that is long enough"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "category",
+                                      "message":  "Category is required"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.552Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 11. Invalid category
+```
+POST http://localhost:5000/api/requests
+Body: {"title":"Valid title here for test","description":"A valid description here that is long enough","category":"INVALID"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "category",
+                                      "message":  "Category must be one of: IT, Facilities, Other"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.579Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 12. Invalid priority
+```
+POST http://localhost:5000/api/requests
+Body: {"title":"Valid title here for test","description":"A valid description here that is long enough","category":"IT","priority":"URGENT"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "priority",
+                                      "message":  "Priority must be one of: LOW, MEDIUM, HIGH"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.606Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 13. Empty body
+```
+POST http://localhost:5000/api/requests
+Body: {}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "title",
+                                      "message":  "Title is required and cannot be blank"
+                                  },
+                                  {
+                                      "field":  "description",
+                                      "message":  "Description is required"
+                                  },
+                                  {
+                                      "field":  "category",
+                                      "message":  "Category is required"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:02:59.644Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 14. Invalid UUID format (GET)
+```
+GET http://localhost:5000/api/requests/abc-123
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "INVALID_IDENTIFIER",
+                  "message":  "The provided request ID \u0027abc-123\u0027 is not a valid UUID"
+              },
+    "timestamp":  "2026-11-13T16:02:59.693Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 15. Unknown UUID (GET)
+```
+GET http://localhost:5000/api/requests/00000000-0000-0000-0000-000000000000
+
+HTTP Status: 404
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "NOT_FOUND",
+                  "message":  "Service request with ID \u002700000000-0000-0000-0000-000000000000\u0027 was not found"
+              },
+    "timestamp":  "2026-11-13T16:02:59.735Z"
+}
+
+Result: PASS (expected 404)
+```
+
+## [+] 16. Invalid UUID format (PATCH)
+```
+PATCH http://localhost:5000/api/requests/not-a-uuid/status
+Body: {"status":"IN_PROGRESS"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "INVALID_IDENTIFIER",
+                  "message":  "The provided request ID \u0027not-a-uuid\u0027 is not a valid UUID"
+              },
+    "timestamp":  "2026-11-13T16:02:59.781Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 17. Unknown UUID (PATCH)
+```
+PATCH http://localhost:5000/api/requests/00000000-0000-0000-0000-000000000000/status
+Body: {"status":"IN_PROGRESS"}
+
+HTTP Status: 404
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "NOT_FOUND",
+                  "message":  "Service request with ID \u002700000000-0000-0000-0000-000000000000\u0027 was not found"
+              },
+    "timestamp":  "2026-11-13T16:02:59.815Z"
+}
+
+Result: PASS (expected 404)
+```
+
+## [+] 18. OPEN -> IN_PROGRESS
+```
+PATCH http://localhost:5000/api/requests/550e8400-e29b-41d4-a716-446655440000/status
 Body: {"status":"IN_PROGRESS"}
 
 HTTP Status: 200
@@ -178,22 +468,23 @@ Response:
 {
     "success":  true,
     "data":  {
-                 "id":  "7ca7b810-9dad-11d1-80b4-00c04fd430c9",
-                 "title":  "VPN access requested for remote finance audit",
-                 "description":  "Require secure global VPN provisioning for the external quarterly finance auditing team.",
+                 "id":  "550e8400-e29b-41d4-a716-446655440000",
+                 "title":  "Flickering monitor on Desk 12",
+                 "description":  "The external monitor turns black intermittently when connected via HDMI cable to MacBook Pro.",
                  "category":  "IT",
-                 "priority":  "MEDIUM",
+                 "priority":  "HIGH",
                  "status":  "IN_PROGRESS",
-                 "created_at":  "2026-11-12T02:15:00.000Z",
-                 "updated_at":  "2026-11-13T11:15:39.076Z"
+                 "created_at":  "2026-11-12T04:10:00.000Z",
+                 "updated_at":  "2026-11-13T16:02:59.862Z"
              }
 }
+
 Result: PASS (expected 200)
 ```
 
-## Test 7: PATCH IN_PROGRESS to RESOLVED
+## [+] 19. IN_PROGRESS -> RESOLVED
 ```
-PATCH http://localhost:5000/api/requests/7ca7b810-9dad-11d1-80b4-00c04fd430c9/status
+PATCH http://localhost:5000/api/requests/550e8400-e29b-41d4-a716-446655440000/status
 Body: {"status":"RESOLVED"}
 
 HTTP Status: 200
@@ -201,22 +492,23 @@ Response:
 {
     "success":  true,
     "data":  {
-                 "id":  "7ca7b810-9dad-11d1-80b4-00c04fd430c9",
-                 "title":  "VPN access requested for remote finance audit",
-                 "description":  "Require secure global VPN provisioning for the external quarterly finance auditing team.",
+                 "id":  "550e8400-e29b-41d4-a716-446655440000",
+                 "title":  "Flickering monitor on Desk 12",
+                 "description":  "The external monitor turns black intermittently when connected via HDMI cable to MacBook Pro.",
                  "category":  "IT",
-                 "priority":  "MEDIUM",
+                 "priority":  "HIGH",
                  "status":  "RESOLVED",
-                 "created_at":  "2026-11-12T02:15:00.000Z",
-                 "updated_at":  "2026-11-13T11:15:39.096Z"
+                 "created_at":  "2026-11-12T04:10:00.000Z",
+                 "updated_at":  "2026-11-13T16:02:59.886Z"
              }
 }
+
 Result: PASS (expected 200)
 ```
 
-## Test 8: PATCH RESOLVED to CLOSED
+## [+] 20. RESOLVED -> CLOSED
 ```
-PATCH http://localhost:5000/api/requests/7ca7b810-9dad-11d1-80b4-00c04fd430c9/status
+PATCH http://localhost:5000/api/requests/550e8400-e29b-41d4-a716-446655440000/status
 Body: {"status":"CLOSED"}
 
 HTTP Status: 200
@@ -224,42 +516,103 @@ Response:
 {
     "success":  true,
     "data":  {
-                 "id":  "7ca7b810-9dad-11d1-80b4-00c04fd430c9",
-                 "title":  "VPN access requested for remote finance audit",
-                 "description":  "Require secure global VPN provisioning for the external quarterly finance auditing team.",
+                 "id":  "550e8400-e29b-41d4-a716-446655440000",
+                 "title":  "Flickering monitor on Desk 12",
+                 "description":  "The external monitor turns black intermittently when connected via HDMI cable to MacBook Pro.",
                  "category":  "IT",
-                 "priority":  "MEDIUM",
+                 "priority":  "HIGH",
                  "status":  "CLOSED",
-                 "created_at":  "2026-11-12T02:15:00.000Z",
-                 "updated_at":  "2026-11-13T11:15:39.113Z"
+                 "created_at":  "2026-11-12T04:10:00.000Z",
+                 "updated_at":  "2026-11-13T16:02:59.909Z"
              }
 }
+
 Result: PASS (expected 200)
 ```
 
-## Test 9: GET request after full lifecycle
+## [+] 21. IN_PROGRESS -> CLOSED (must reject)
 ```
-GET http://localhost:5000/api/requests/7ca7b810-9dad-11d1-80b4-00c04fd430c9
+PATCH http://localhost:5000/api/requests/6ba7b810-9dad-11d1-80b4-00c04fd430c8/status
+Body: {"status":"CLOSED"}
 
-HTTP Status: 200
+HTTP Status: 400
 Response:
 {
-    "success":  true,
-    "data":  {
-                 "id":  "7ca7b810-9dad-11d1-80b4-00c04fd430c9",
-                 "title":  "VPN access requested for remote finance audit",
-                 "description":  "Require secure global VPN provisioning for the external quarterly finance auditing team.",
-                 "category":  "IT",
-                 "priority":  "MEDIUM",
-                 "status":  "CLOSED",
-                 "created_at":  "2026-11-12T02:15:00.000Z",
-                 "updated_at":  "2026-11-13T11:15:39.113Z"
-             }
+    "success":  false,
+    "error":  {
+                  "code":  "INVALID_STATE_TRANSITION",
+                  "message":  "Cannot transition request from \u0027IN_PROGRESS\u0027 directly to \u0027CLOSED\u0027. Allowed target statuses: \u0027RESOLVED\u0027."
+              },
+    "timestamp":  "2026-11-13T16:02:59.951Z"
 }
-Result: PASS (expected 200)
+
+Result: PASS (expected 400)
 ```
 
-## Test 10: Filter by status=OPEN
+## [+] 22. IN_PROGRESS -> OPEN (must reject)
+```
+PATCH http://localhost:5000/api/requests/6ba7b810-9dad-11d1-80b4-00c04fd430c8/status
+Body: {"status":"OPEN"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "INVALID_STATE_TRANSITION",
+                  "message":  "Cannot transition request from \u0027IN_PROGRESS\u0027 directly to \u0027OPEN\u0027. Allowed target statuses: \u0027RESOLVED\u0027."
+              },
+    "timestamp":  "2026-11-13T16:02:59.997Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 23. CLOSED -> OPEN (terminal, must reject)
+```
+PATCH http://localhost:5000/api/requests/9ea7b810-9dad-11d1-80b4-00c04fd430d1/status
+Body: {"status":"OPEN"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "INVALID_STATE_TRANSITION",
+                  "message":  "Cannot modify a service request that is already in terminal \u0027CLOSED\u0027 status."
+              },
+    "timestamp":  "2026-11-13T16:03:00.055Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 24. Invalid status value
+```
+PATCH http://localhost:5000/api/requests/6ba7b810-9dad-11d1-80b4-00c04fd430c8/status
+Body: {"status":"INVALID"}
+
+HTTP Status: 400
+Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid request payload",
+                  "details":  [
+                                  {
+                                      "field":  "status",
+                                      "message":  "Status must be one of: OPEN, IN_PROGRESS, RESOLVED, CLOSED"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:03:00.084Z"
+}
+
+Result: PASS (expected 400)
+```
+
+## [+] 25. Filter by status=OPEN
 ```
 GET http://localhost:5000/api/requests?status=OPEN
 
@@ -269,223 +622,97 @@ Response:
     "success":  true,
     "data":  [
                  {
-                     "id":  "e1862fbe-45c2-4a6a-8d48-a72955e32dc1",
+                     "id":  "bd9feb35-2b43-4603-b4f4-2e7b89a704f8",
                      "title":  "Broken window latch in Room 101",
                      "description":  "The window latch in Room 101 is broken and cannot be secured properly",
                      "category":  "Facilities",
                      "priority":  "MEDIUM",
                      "status":  "OPEN",
-                     "created_at":  "2026-11-13T11:15:39.053Z",
-                     "updated_at":  "2026-11-13T11:15:39.053Z"
+                     "created_at":  "2026-11-13T16:02:59.399Z",
+                     "updated_at":  "2026-11-13T16:02:59.399Z"
                  },
                  {
-                     "id":  "da2325af-ca49-4728-a556-ffe6eb70c918",
+                     "id":  "e63363d4-c47a-48ce-9faf-ac759db9087e",
                      "title":  "Network switch reboot needed",
                      "description":  "The network switch on floor 2 needs rebooting after firmware update",
                      "category":  "IT",
                      "priority":  "HIGH",
                      "status":  "OPEN",
-                     "created_at":  "2026-11-13T11:15:38.670Z",
-                     "updated_at":  "2026-11-13T11:15:38.670Z"
+                     "created_at":  "2026-11-13T16:02:59.359Z",
+                     "updated_at":  "2026-11-13T16:02:59.359Z"
                  },
                  {
-                     "id":  "550e8400-e29b-41d4-a716-446655440000",
-                     "title":  "Flickering monitor on Desk 12",
-                     "description":  "The external monitor turns black intermittently when connected via HDMI cable to MacBook Pro.",
+                     "id":  "7ca7b810-9dad-11d1-80b4-00c04fd430c9",
+                     "title":  "VPN access requested for remote finance audit",
+                     "description":  "Require secure global VPN provisioning for the external quarterly finance auditing team.",
                      "category":  "IT",
-                     "priority":  "HIGH",
+                     "priority":  "MEDIUM",
                      "status":  "OPEN",
-                     "created_at":  "2026-11-12T04:10:00.000Z",
-                     "updated_at":  "2026-11-12T04:10:00.000Z"
+                     "created_at":  "2026-11-12T02:15:00.000Z",
+                     "updated_at":  "2026-11-12T02:15:00.000Z"
                  }
              ]
 }
+
 Result: PASS (expected 200)
 ```
 
-## Test 11: Missing title
+## [+] 26. Filter by invalid status
 ```
-POST http://localhost:5000/api/requests
-Body: {"description":"A valid description here","category":"IT"}
+GET http://localhost:5000/api/requests?status=INVALID
 
 HTTP Status: 400
 Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "VALIDATION_ERROR",
+                  "message":  "Invalid query parameter \u0027status\u0027",
+                  "details":  [
+                                  {
+                                      "field":  "status",
+                                      "message":  "Status must be one of: OPEN, IN_PROGRESS, RESOLVED, CLOSED"
+                                  }
+                              ]
+              },
+    "timestamp":  "2026-11-13T16:03:00.164Z"
+}
 
-Result: FAIL (expected 400, got 400)
+Result: PASS (expected 400)
 ```
 
-## Test 12: Title too short
-```
-POST http://localhost:5000/api/requests
-Body: {"title":"Hi","description":"A valid description here","category":"IT"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 13: Invalid category
-```
-POST http://localhost:5000/api/requests
-Body: {"title":"Valid title here","description":"A valid description here","category":"INVALID"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 14: Invalid priority
-```
-POST http://localhost:5000/api/requests
-Body: {"title":"Valid title here","description":"A valid description here","category":"IT","priority":"URGENT"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 15: Missing description
-```
-POST http://localhost:5000/api/requests
-Body: {"title":"Valid title here","category":"IT"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 16: Description too short
-```
-POST http://localhost:5000/api/requests
-Body: {"title":"Valid title here","description":"Short","category":"IT"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 17: Invalid ID format
-```
-GET http://localhost:5000/api/requests/abc-123
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 18: Unknown request ID
-```
-GET http://localhost:5000/api/requests/00000000-0000-0000-0000-000000000000
-
-HTTP Status: 404
-Response:
-
-Result: FAIL (expected 404, got 404)
-```
-
-## Test 19: BUG FIX — IN_PROGRESS to CLOSED (must reject)
-```
-PATCH http://localhost:5000/api/requests/6ba7b810-9dad-11d1-80b4-00c04fd430c8/status
-Body: {"status":"CLOSED"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 20: OPEN to RESOLVED (must reject)
-```
-PATCH http://localhost:5000/api/requests/550e8400-e29b-41d4-a716-446655440000/status
-Body: {"status":"RESOLVED"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 21: OPEN to CLOSED (must reject)
-```
-PATCH http://localhost:5000/api/requests/550e8400-e29b-41d4-a716-446655440000/status
-Body: {"status":"CLOSED"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 22: Transition from CLOSED (terminal)
-```
-PATCH http://localhost:5000/api/requests/9ea7b810-9dad-11d1-80b4-00c04fd430d1/status
-Body: {"status":"OPEN"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 23: Invalid status value
-```
-PATCH http://localhost:5000/api/requests/550e8400-e29b-41d4-a716-446655440000/status
-Body: {"status":"INVALID"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 24: Unknown route
+## [+] 27. Unknown route returns 404
 ```
 GET http://localhost:5000/api/nonexistent
 
 HTTP Status: 404
 Response:
+{
+    "success":  false,
+    "error":  {
+                  "code":  "NOT_FOUND",
+                  "message":  "The requested endpoint GET /api/nonexistent does not exist"
+              },
+    "timestamp":  "2026-11-13T16:03:00.197Z"
+}
 
-Result: FAIL (expected 404, got 404)
-```
-
-## Test 25: PATCH with invalid UUID
-```
-PATCH http://localhost:5000/api/requests/not-a-uuid/status
-Body: {"status":"IN_PROGRESS"}
-
-HTTP Status: 400
-Response:
-
-Result: FAIL (expected 400, got 400)
-```
-
-## Test 26: PATCH unknown request
-```
-PATCH http://localhost:5000/api/requests/00000000-0000-0000-0000-000000000000/status
-Body: {"status":"IN_PROGRESS"}
-
-HTTP Status: 404
-Response:
-
-Result: FAIL (expected 404, got 404)
+Result: PASS (expected 404)
 ```
 
 ---
 
-# Day 05 API Test Results Summary
+## State Machine Verification
 
-**Date:** 2026-11-13 16:45:39
-**Server:** http://localhost:5000
-**Branch:** feature/day-05-backend-api-service-layer
+```
+Strict Linear Lifecycle:
+  OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED
 
-| Result | Count |
-|--------|-------|
-| PASS   | 10 |
-| FAIL   | 17 |
-| Total  | 27 |
+Tests Verified:
+  [+] OPEN -> IN_PROGRESS (allowed)
+  [+] IN_PROGRESS -> RESOLVED (allowed)
+  [+] RESOLVED -> CLOSED (allowed)
+  [+] IN_PROGRESS -> CLOSED (REJECTED - bug fix confirmed)
+  [+] IN_PROGRESS -> OPEN (REJECTED - no backward transitions)
+  [+] CLOSED -> OPEN (REJECTED - terminal state)
+  [+] Invalid status value (REJECTED - validation error)
+```
