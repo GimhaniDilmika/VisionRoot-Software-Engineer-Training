@@ -99,7 +99,12 @@ export const AppHeader: React.FC = () => {
             }}
           >
             {navLinks.map(({ href, label, icon }) => {
-              const isActive = pathname === href || (href === '/requests' && pathname.startsWith('/requests'));
+              const isActive =
+                href === '/requests/new'
+                  ? pathname === '/requests/new'
+                  : href === '/requests'
+                  ? pathname === '/requests'
+                  : pathname === href;
               return (
                 <li key={href}>
                   <Link

@@ -1,16 +1,38 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AppHeader } from '../components/layout/AppHeader';
 import { DemoBanner } from '../components/ui/DemoBanner';
+import { mockRequestService } from '../features/requests/services/mockRequests';
+import { ServiceRequest } from '../features/requests/types/request';
 
 export default function HomePage() {
+  const [requests, setRequests] = useState<ServiceRequest[]>([]);
+
+  useEffect(() => {
+    mockRequestService.getRequests().then(setRequests);
+  }, []);
+
+  const total      = requests.length;
+  const open       = requests.filter((r) => r.status === 'OPEN').length;
+  const inProgress = requests.filter((r) => r.status === 'IN_PROGRESS').length;
+  const resolved   = requests.filter((r) => r.status === 'RESOLVED').length;
+
+  const stats = [
+    { value: total,      label: 'Total Requests',  color: '#16A34A' },
+    { value: open,       label: 'Open',             color: '#3B82F6' },
+    { value: inProgress, label: 'In Progress',      color: '#F59E0B' },
+    { value: resolved,   label: 'Resolved',         color: '#10B981' },
+  ];
+
   return (
     <>
       <AppHeader />
       <DemoBanner />
 
       <main>
-        {/* ── Hero section ─────────────────────────────────────────────── */}
+        {/* ── Hero section ─────────────────────────────────────────── */}
         <section
           style={{
             backgroundColor: '#fff',
@@ -75,13 +97,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── Stats strip ─────────────────────────────────────────────── */}
+        {/* ── Stats strip ──────────────────────────────────────────── */}
         <section style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
           <div className="container" style={{ padding: '1.5rem 1.5rem' }}>
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
                 gap: '0',
                 backgroundColor: '#fff',
                 border: '1px solid #E2E8F0',
@@ -90,12 +112,7 @@ export default function HomePage() {
                 boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
               }}
             >
-              {[
-                { value: '5', label: 'Demo Requests', color: '#16A34A' },
-                { value: '2', label: 'Open', color: '#3B82F6' },
-                { value: '1', label: 'In Progress', color: '#F59E0B' },
-                { value: '1', label: 'Resolved', color: '#10B981' },
-              ].map(({ value, label, color }, i, arr) => (
+              {stats.map(({ value, label, color }, i, arr) => (
                 <div
                   key={label}
                   style={{
@@ -113,10 +130,13 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+            <p style={{ margin: '0.75rem 0 0', fontSize: '0.78rem', color: '#94A3B8', textAlign: 'center' }}>
+              Counts reflect demo data only — not persisted to a database.
+            </p>
           </div>
         </section>
 
-        {/* ── Feature cards ───────────────────────────────────────────── */}
+        {/* ── Feature cards ────────────────────────────────────────── */}
         <section style={{ padding: '3rem 1.5rem' }}>
           <div className="container">
             <h2
@@ -144,6 +164,8 @@ export default function HomePage() {
                   desc: 'Fill in a simple form with your issue details, category, and priority level.',
                   color: '#EFF6FF',
                   border: '#BFDBFE',
+                  href: '/requests/new',
+                  cta: 'Submit a request →',
                 },
                 {
                   icon: '🔍',
@@ -151,6 +173,8 @@ export default function HomePage() {
                   desc: 'Monitor your requests from Open through In Progress to Resolved or Closed.',
                   color: '#F0FDF4',
                   border: '#86EFAC',
+                  href: '/requests',
+                  cta: 'View all requests →',
                 },
                 {
                   icon: '✅',
@@ -158,8 +182,10 @@ export default function HomePage() {
                   desc: 'Support staff update statuses so requestors always see current progress.',
                   color: '#FFFBEB',
                   border: '#FCD34D',
+                  href: '/requests',
+                  cta: 'See resolved requests →',
                 },
-              ].map(({ icon, title, desc, color, border }) => (
+              ].map(({ icon, title, desc, color, border, href, cta }) => (
                 <div
                   key={title}
                   style={{
@@ -168,6 +194,8 @@ export default function HomePage() {
                     padding: '1.5rem',
                     backgroundColor: color,
                     boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.05)',
+                    display: 'flex',
+                    flexDirection: 'column',
                   }}
                 >
                   <span style={{ fontSize: '1.75rem', display: 'block', marginBottom: '0.75rem' }}>
@@ -176,16 +204,22 @@ export default function HomePage() {
                   <h3 style={{ margin: '0 0 0.4rem', fontSize: '1rem', fontWeight: 700, color: '#1E293B' }}>
                     {title}
                   </h3>
-                  <p style={{ margin: 0, fontSize: '0.875rem', color: '#475569', lineHeight: 1.6 }}>
+                  <p style={{ margin: '0 0 1rem', fontSize: '0.875rem', color: '#475569', lineHeight: 1.6, flex: 1 }}>
                     {desc}
                   </p>
+                  <Link
+                    href={href}
+                    style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#16A34A', textDecoration: 'none' }}
+                  >
+                    {cta}
+                  </Link>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── Footer strip ─────────────────────────────────────────────── */}
+        {/* ── Footer strip ─────────────────────────────────────────── */}
         <section
           style={{
             borderTop: '1px solid #E2E8F0',
@@ -196,7 +230,7 @@ export default function HomePage() {
         >
           <p style={{ margin: 0, fontSize: '0.8125rem', color: '#94A3B8' }}>
             VisionRoot Training Project — Day 04 Frontend UI &nbsp;·&nbsp;
-            <strong>Demo Mode Active</strong> — data resets on page reload.
+            Built with Next.js 14 &amp; TypeScript
           </p>
         </section>
       </main>
