@@ -3,7 +3,7 @@
 [![Training Duration](https://img.shields.io/badge/Duration-2%20Weeks%20%2F%2010%20Days-blue.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Role](https://img.shields.io/badge/Role-Trainee%20Software%20Engineer-green.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Monolith-orange.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
-[![Status](https://img.shields.io/badge/Status-Day%2005%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
+[![Status](https://img.shields.io/badge/Status-Day%2006%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Node Version](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-339933.svg?logo=nodedotjs)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg?logo=typescript)](https://www.typescriptlang.org)
 
@@ -11,7 +11,7 @@ Welcome to the **VisionRoot Trainee Software Engineer** 10-day training reposito
 
 This project follows a structured, learn-by-building pathway focused on practical web application development, software architecture, clean code, API engineering, database design, automated testing, security, and technical documentation.
 
-**Current Training Progress: Day 05 Completed — Backend API & Service Layer**
+**Current Training Progress: Day 06 Completed — Database and Persistence**
 
 ---
 
@@ -41,8 +41,8 @@ The system is designed around clearly separated frontend, API, business logic, a
 | Frontend | Next.js, React, TypeScript |
 | Backend | Node.js, Express.js, TypeScript |
 | Database | PostgreSQL |
-| Current Progress | Day 05 Completed |
-| Next Task | Day 06 — Database and Persistence |
+| Current Progress | Day 06 Completed |
+| Next Task | Day 07 — Full-Stack Integration |
 
 ### Core Application Features
 
@@ -138,6 +138,11 @@ VisionRoot-Training/
 │   └── src/
 │       ├── app.ts
 │       ├── server.ts
+│       ├── infrastructure/
+│       │   └── database/
+│       │       ├── pool.ts
+│       │       ├── migrate.ts
+│       │       └── seed.ts
 │       ├── middleware/
 │       │   ├── error-handler.ts
 │       │   ├── not-found.ts
@@ -149,6 +154,12 @@ VisionRoot-Training/
 │               ├── routes.ts
 │               ├── service.ts
 │               └── types.ts
+│
+├── database/
+│   ├── migrations/
+│   │   └── 001_create_service_requests.sql
+│   └── seeds/
+│       └── 001_seed_service_requests.sql
 │
 ├── frontend/
 │   ├── package.json
@@ -171,7 +182,8 @@ VisionRoot-Training/
     ├── Day-02/
     ├── Day-03/
     ├── Day-04/
-    └── Day-05/
+    ├── Day-05/
+    └── Day-06/
 ```
 
 ---
@@ -204,9 +216,23 @@ Copy-Item backend\.env.example backend\.env
 Copy-Item frontend\.env.example frontend\.env.local
 ```
 
+Ensure `backend/.env` has your local PostgreSQL credentials configured (`DB_NAME=visionroot_service_requests`, `DB_PASSWORD=...`).
+
 > **Security:** Never commit `.env`, `.env.local`, API keys, database passwords, access tokens, or private credentials to GitHub.
 
-### Step 4: Start the Backend
+### Step 4: Run PostgreSQL Database Migrations & Seeds
+
+Execute the version-controlled migrations and seed scripts:
+
+```powershell
+# Run database schema migration
+npm run db:migrate
+
+# Populate initial demo records (idempotent)
+npm run db:seed
+```
+
+### Step 5: Start the Backend
 
 ```powershell
 npm run dev:backend
@@ -218,7 +244,7 @@ Expected backend address:
 http://localhost:5000
 ```
 
-### Step 5: Start the Frontend
+### Step 6: Start the Frontend
 
 Open a second terminal.
 
@@ -239,6 +265,8 @@ http://localhost:3000
 | Command | Purpose |
 |---|---|
 | `npm install` | Install project dependencies |
+| `npm run db:migrate` | Execute version-controlled PostgreSQL schema migrations |
+| `npm run db:seed` | Seed idempotent demo service requests into PostgreSQL |
 | `npm run dev:backend` | Start Express backend |
 | `npm run dev:frontend` | Start Next.js frontend |
 | `npm run build` | Build frontend and backend |
@@ -332,7 +360,7 @@ Include:
 | Day 03 | GitHub Workflow & Environment Setup | ✅ Completed | [package.json](package.json), [backend/](backend/), [frontend/](frontend/), [evidence/Day-03/daily-log.md](evidence/Day-03/daily-log.md) |
 | Day 04 | Frontend Architecture & UI | ✅ Completed | [evidence/Day-04/daily-log.md](evidence/Day-04/daily-log.md), [evidence/Day-04/PR_DESCRIPTION.md](evidence/Day-04/PR_DESCRIPTION.md) |
 | Day 05 | Backend API & Service Layer | ✅ Completed | [evidence/Day-05/daily-log.md](evidence/Day-05/daily-log.md), [evidence/Day-05/api-test-results.md](evidence/Day-05/api-test-results.md), [evidence/Day-05/PR_DESCRIPTION.md](evidence/Day-05/PR_DESCRIPTION.md) |
-| Day 06 | Database & Persistence | ⏳ Planned | PostgreSQL schema, migrations, repository integration |
+| Day 06 | Database & Persistence | ✅ Completed | [evidence/Day-06/daily-log.md](evidence/Day-06/daily-log.md), [evidence/Day-06/database-test-results.md](evidence/Day-06/database-test-results.md), [evidence/Day-06/PR_DESCRIPTION.md](evidence/Day-06/PR_DESCRIPTION.md) |
 | Day 07 | Full-Stack Integration | ⏳ Planned | Frontend/API integration, business workflows |
 | Day 08 | Automated Testing & Quality | ⏳ Planned | Unit tests, integration tests, debugging |
 | Day 09 | Security, Deployment & Operations | ⏳ Planned | Security review, deployment documentation |
@@ -896,31 +924,63 @@ evidence/
 
 ---
 
-## 🔜 Day 06 — Database and Persistence
+## ✅ Day 06 — Database and Persistence
+
+**Status: Completed**
+
+**Objective:** Persist service request data using a proper relational database setup with PostgreSQL, connection pooling, version-controlled migrations, and repository-level query execution.
+
+### Work Completed
+
+- Configured a resilient singleton PostgreSQL connection pool (`pg.Pool`) in `backend/src/infrastructure/database/pool.ts` with connection limits and error listeners.
+- Created idempotent, version-controlled SQL migration `database/migrations/001_create_service_requests.sql` matching `docs/data-model.md` (`pgcrypto`, UUID primary keys, check constraints on title, description, category, and priority, 3 B-tree indexes, and auto-updating `updated_at` trigger).
+- Created repeatable seed script `database/seeds/001_seed_service_requests.sql` populating the 5 standard demo records with `ON CONFLICT (id) DO UPDATE` to prevent primary key collisions.
+- Implemented automated TypeScript migration runner (`npm run db:migrate`) tracking applied versions in `schema_migrations` within atomic transactions.
+- Implemented automated seed runner (`npm run db:seed`) to populate demo records.
+- Replaced the temporary in-memory store in `backend/src/modules/requests/repository.ts` with parameterized PostgreSQL queries (`SELECT`, `INSERT ... RETURNING`, `UPDATE ... RETURNING`).
+- Normalized PostgreSQL Date columns to UTC ISO-8601 strings (`.toISOString()`), preserving 100% frontend and API contract compatibility.
+- Connected `/api/health` to dynamically query PostgreSQL responsiveness and report live connection status and latency.
+- Verified persistent storage across application restarts: created ticket `8a917a28-3d72-4729-b2cb-e3038a27e712`, advanced status to `IN_PROGRESS`, restarted backend server, and verified all attributes persisted in PostgreSQL.
+- Executed 29/29 automated regression tests verifying CRUD operations, status state machine rules, validation error envelopes, and UUID error handling.
+
+### Deliverables
+
+- `database/migrations/001_create_service_requests.sql`
+- `database/seeds/001_seed_service_requests.sql`
+- `backend/src/infrastructure/database/pool.ts`
+- `backend/src/infrastructure/database/migrate.ts`
+- `backend/src/infrastructure/database/seed.ts`
+- `backend/src/modules/requests/repository.ts`
+- `evidence/Day-06/daily-log.md`
+- `evidence/Day-06/database-test-results.md`
+- `evidence/Day-06/PR_DESCRIPTION.md`
+
+### Learning Outcome
+
+Mastered relational schema implementation, connection pooling, SQL injection prevention via parameterized queries, idempotent database migrations, transaction atomicity, and repository-pattern data access.
+
+---
+
+## 🔜 Day 07 — Full-Stack Integration
 
 **Status: Planned**
 
-**Objective:** Persist service request data using a proper relational database setup.
+**Objective:** Connect the Next.js frontend client to the live Express.js REST API and PostgreSQL database, replacing mock services with real network requests.
 
 ### Planned Activities
 
-1. Review database tables, primary keys, constraints, indexes, and migrations.
-2. Create the PostgreSQL request schema.
-3. Implement or configure migrations.
-4. Connect repository methods to PostgreSQL.
-5. Verify records persist after restarting the application.
-6. Test a missing or invalid database configuration.
-7. Update database setup documentation.
-8. Record migration and persistence evidence.
+1. Connect the Next.js frontend to the Express API (`/api/requests`).
+2. Replace frontend mock service with live API client.
+3. Implement end-to-end request creation, listing, details view, and status updates.
+4. Verify error handling across the full stack.
+5. Record integration verification evidence.
 
 ### Expected Deliverables
 
-- PostgreSQL schema and migration files.
-- Database configuration documentation.
-- Repository integration.
-- Persistence test results.
-- Updated `docs/data-model.md`.
-- `evidence/Day-06/daily-log.md`.
+- Live API client integration in `frontend/`.
+- End-to-end user workflows from browser to database.
+- `evidence/Day-07/daily-log.md`.
+- `evidence/Day-07/PR_DESCRIPTION.md`.
 
 ---
 
@@ -957,7 +1017,7 @@ The project follows the security and professional standards outlined in the trai
 
 ## 📊 Current Training Completion Summary
 
-**Completed:** 5 of 10 training days.
+**Completed:** 6 of 10 training days.
 
 ```text
 Day 01  ✅ Requirements and SDLC
@@ -965,30 +1025,31 @@ Day 02  ✅ Architecture and System Design
 Day 03  ✅ GitHub Workflow and Environment
 Day 04  ✅ Frontend Architecture and UI
 Day 05  ✅ Backend API and Service Layer
-Day 06  ⏳ Database and Persistence
+Day 06  ✅ Database and Persistence
 Day 07  ⏳ Full-Stack Integration
 Day 08  ⏳ Automated Testing and Quality
 Day 09  ⏳ Security and Deployment
 Day 10  ⏳ Final Review and Handover
 ```
 
-**Overall Progress: 50% of the 10-day training roadmap completed.**
+**Overall Progress: 60% of the 10-day training roadmap completed.**
 
 ---
 
 ## 🏁 Conclusion
 
-The VisionRoot Service Request Management System training project has progressed through its first five development stages:
+The VisionRoot Service Request Management System training project has progressed through its first six development stages:
 
 1. Requirements Analysis
 2. Architecture Design
 3. Environment and GitHub Setup
 4. Frontend Development
 5. Backend API and Service Layer
+6. Database and Persistence
 
-Day 05 establishes the intended backend API and layered responsibilities needed for the next phase.
+Day 06 establishes persistent relational storage in PostgreSQL, parameterized queries, and idempotent schema migrations.
 
-The next milestone is **Day 06 — Database and Persistence**, where PostgreSQL will be integrated to support persistent service request storage.
+The next milestone is **Day 07 — Full-Stack Integration**, where the Next.js frontend will be connected to the live Express REST API to deliver end-to-end service request management.
 
 The overall development approach prioritizes understandable architecture, code maintainability, testability, and professional engineering documentation.
 
@@ -1000,4 +1061,4 @@ The overall development approach prioritizes understandable architecture, code m
 
 **Project:** Service Request Management System
 
-**Training Status:** Day 05 Completed
+**Training Status:** Day 06 Completed

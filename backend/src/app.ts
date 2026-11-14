@@ -12,6 +12,7 @@ import { requestLogger } from './middleware/request-logger';
 import { notFoundHandler } from './middleware/not-found';
 import { errorHandler } from './middleware/error-handler';
 import requestRoutes from './modules/requests/routes';
+import { checkDatabaseConnection } from './infrastructure/database/pool';
 
 dotenv.config();
 
@@ -28,19 +29,41 @@ app.use(express.json());
 app.use(requestLogger);
 
 // ── Health check ─────────────────────────────────────────────────────────────
-app.get('/api/health', (_req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      status: 'healthy',
-      uptime_seconds: parseFloat(process.uptime().toFixed(1)),
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'development',
-      database: {
-        status: 'not_configured',
-        note: 'PostgreSQL integration deferred to Day 06. Using in-memory store.',
+app.get('/api/health', async (_req, res) => {
+  const dbHealth = await checkDatabaseConnection();
+
+  if (dbHealth.connected) {
+    res.status(200).json({
+      success: true,
+      data: {
+        status: 'healthy',
+        uptime_seconds: parseFloat(process.uptime().toFixed(1)),
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development',
+        database: {
+          status: 'connected',
+          latency_ms: dbHealth.latency_ms,
+        },
       },
+    });
+    return;
+  }
+
+  // Graceful degradation / service unavailable if database connection fails
+  res.status(503).json({
+    success: false,
+    error: {
+      code: 'SERVICE_UNAVAILABLE',
+      message: 'System health probe failed',
+      details: [
+        {
+          component: 'database',
+          status: 'disconnected',
+          error: dbHealth.error || 'Connection to PostgreSQL database failed',
+        },
+      ],
     },
+    timestamp: new Date().toISOString(),
   });
 });
 

@@ -1,142 +1,164 @@
 /**
- * In-Memory Request Repository — Day 05
- * Provides CRUD operations against an in-memory data store.
- * Will be replaced with PostgreSQL queries on Day 06.
+ * PostgreSQL Request Repository — Day 06
+ *
+ * Implements persistent CRUD operations against PostgreSQL using parameterized queries
+ * via the infrastructure connection pool (`pg.Pool`).
+ * Replaces the Day 05 in-memory mock store while preserving 100% of the repository interface.
+ * Aligned with docs/data-model.md and docs/architecture.md.
  */
 
-import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import { query } from '../../infrastructure/database/pool';
 import {
   ServiceRequest,
   CreateRequestDTO,
   RequestStatus,
+  RequestCategory,
+  RequestPriority,
 } from './types';
 
-// Seed data aligned with frontend mockRequests.ts
-const SEED_DATA: ServiceRequest[] = [
-  {
-    id: '550e8400-e29b-41d4-a716-446655440000',
-    title: 'Flickering monitor on Desk 12',
-    description:
-      'The external monitor turns black intermittently when connected via HDMI cable to MacBook Pro.',
-    category: 'IT',
-    priority: 'HIGH',
-    status: 'OPEN',
-    created_at: '2026-11-12T04:10:00.000Z',
-    updated_at: '2026-11-12T04:10:00.000Z',
-  },
-  {
-    id: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-    title: 'Air conditioning water leak in Meeting Room B',
-    description:
-      'Ceiling AC unit is dripping water directly above the main conference table.',
-    category: 'Facilities',
-    priority: 'HIGH',
-    status: 'IN_PROGRESS',
-    created_at: '2026-11-12T03:30:00.000Z',
-    updated_at: '2026-11-12T04:00:00.000Z',
-  },
-  {
-    id: '7ca7b810-9dad-11d1-80b4-00c04fd430c9',
-    title: 'VPN access requested for remote finance audit',
-    description:
-      'Require secure global VPN provisioning for the external quarterly finance auditing team.',
-    category: 'IT',
-    priority: 'MEDIUM',
-    status: 'OPEN',
-    created_at: '2026-11-12T02:15:00.000Z',
-    updated_at: '2026-11-12T02:15:00.000Z',
-  },
-  {
-    id: '8da7b810-9dad-11d1-80b4-00c04fd430d0',
-    title: 'Ergonomic keyboard replacement for workstation 4',
-    description: 'Spacebar key sticking repeatedly on existing wireless keyboard.',
-    category: 'Other',
-    priority: 'LOW',
-    status: 'RESOLVED',
-    created_at: '2026-11-11T10:00:00.000Z',
-    updated_at: '2026-11-12T01:00:00.000Z',
-  },
-  {
-    id: '9ea7b810-9dad-11d1-80b4-00c04fd430d1',
-    title: 'Cafeteria microwave door latch broken',
-    description: 'Upper floor cafeteria microwave door fails to latch securely shut.',
-    category: 'Facilities',
-    priority: 'LOW',
-    status: 'CLOSED',
-    created_at: '2026-11-10T08:00:00.000Z',
-    updated_at: '2026-11-11T16:00:00.000Z',
-  },
-];
+interface ServiceRequestRow {
+  id: string;
+  title: string;
+  description: string;
+  category: RequestCategory;
+  priority: RequestPriority;
+  status: RequestStatus;
+  created_at: Date | string;
+  updated_at: Date | string;
+}
 
-// In-memory store
-let store: ServiceRequest[] = [...SEED_DATA];
+/**
+ * Normalizes PostgreSQL query results into API-compliant ServiceRequest domain entities.
+ * Ensures timestamps are formatted as ISO-8601 UTC strings.
+ */
+function mapRowToServiceRequest(row: ServiceRequestRow): ServiceRequest {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    category: row.category,
+    priority: row.priority,
+    status: row.status,
+    created_at:
+      row.created_at instanceof Date
+        ? row.created_at.toISOString()
+        : new Date(row.created_at).toISOString(),
+    updated_at:
+      row.updated_at instanceof Date
+        ? row.updated_at.toISOString()
+        : new Date(row.updated_at).toISOString(),
+  };
+}
 
 export const requestRepository = {
   /**
    * Retrieve all requests, optionally filtered by status.
-   * Returns newest first (created_at DESC).
+   * Returns records ordered newest first (created_at DESC).
    */
   async findAll(status?: RequestStatus): Promise<ServiceRequest[]> {
-    let results = [...store];
+    let sql = `
+      SELECT id, title, description, category, priority, status, created_at, updated_at
+      FROM service_requests
+    `;
+    const params: unknown[] = [];
+
     if (status) {
-      results = results.filter((r) => r.status === status);
+      sql += ' WHERE status = $1';
+      params.push(status);
     }
-    // Sort by created_at descending
-    results.sort(
-      (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    );
-    return results;
+
+    sql += ' ORDER BY created_at DESC;';
+
+    const result = await query<ServiceRequestRow>(sql, params);
+    return result.rows.map(mapRowToServiceRequest);
   },
 
   /**
-   * Find a single request by ID.
+   * Find a single request by its UUID primary key.
+   * Returns null if no record is found.
    */
   async findById(id: string): Promise<ServiceRequest | null> {
-    const found = store.find((r) => r.id === id);
-    return found ? { ...found } : null;
+    const sql = `
+      SELECT id, title, description, category, priority, status, created_at, updated_at
+      FROM service_requests
+      WHERE id = $1;
+    `;
+    const result = await query<ServiceRequestRow>(sql, [id]);
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return mapRowToServiceRequest(result.rows[0]);
   },
 
   /**
-   * Insert a new request. Returns the created entity.
+   * Insert a new service request.
+   * PostgreSQL generates the UUID primary key and default timestamps.
    */
   async create(dto: CreateRequestDTO): Promise<ServiceRequest> {
-    const now = new Date().toISOString();
-    const newRequest: ServiceRequest = {
-      id: crypto.randomUUID(),
-      title: dto.title.trim(),
-      description: dto.description.trim(),
-      category: dto.category,
-      priority: dto.priority,
-      status: 'OPEN',
-      created_at: now,
-      updated_at: now,
-    };
-    store.unshift(newRequest);
-    return { ...newRequest };
+    const sql = `
+      INSERT INTO service_requests (
+        title,
+        description,
+        category,
+        priority,
+        status
+      )
+      VALUES ($1, $2, $3, $4, 'OPEN')
+      RETURNING id, title, description, category, priority, status, created_at, updated_at;
+    `;
+    const params = [
+      dto.title.trim(),
+      dto.description.trim(),
+      dto.category,
+      dto.priority || 'MEDIUM',
+    ];
+
+    const result = await query<ServiceRequestRow>(sql, params);
+    return mapRowToServiceRequest(result.rows[0]);
   },
 
   /**
-   * Update the status of a request. Returns the updated entity.
+   * Update the lifecycle status of a request.
+   * The database trigger automatically updates updated_at.
    */
   async updateStatus(
     id: string,
     newStatus: RequestStatus
   ): Promise<ServiceRequest | null> {
-    const index = store.findIndex((r) => r.id === id);
-    if (index === -1) return null;
-    store[index] = {
-      ...store[index],
-      status: newStatus,
-      updated_at: new Date().toISOString(),
-    };
-    return { ...store[index] };
+    const sql = `
+      UPDATE service_requests
+      SET status = $1, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $2
+      RETURNING id, title, description, category, priority, status, created_at, updated_at;
+    `;
+    const result = await query<ServiceRequestRow>(sql, [newStatus, id]);
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return mapRowToServiceRequest(result.rows[0]);
   },
 
   /**
-   * Reset store to seed data (for testing).
+   * Reset store to initial seed data.
+   * Re-applies the idempotent 001_seed_service_requests.sql script.
    */
   async resetToSeed(): Promise<void> {
-    store = [...SEED_DATA];
+    const candidates = [
+      path.resolve(process.cwd(), 'database/seeds/001_seed_service_requests.sql'),
+      path.resolve(process.cwd(), '../database/seeds/001_seed_service_requests.sql'),
+      path.resolve(__dirname, '../../../../database/seeds/001_seed_service_requests.sql'),
+    ];
+    const seedPath = candidates.find((p) => fs.existsSync(p));
+
+    if (seedPath) {
+      const sql = fs.readFileSync(seedPath, 'utf-8');
+      await query(sql);
+    }
   },
 };
