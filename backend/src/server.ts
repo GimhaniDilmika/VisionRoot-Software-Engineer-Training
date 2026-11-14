@@ -5,6 +5,7 @@
  */
 
 import app from './app';
+import { closePool } from './infrastructure/database/pool';
 
 const PORT = process.env.PORT || 5000;
 
@@ -21,10 +22,12 @@ const server = app.listen(PORT, () => {
 });
 
 // Graceful shutdown
-function shutdown(signal: string): void {
+async function shutdown(signal: string): Promise<void> {
   console.log(`\n[VisionRoot Backend] Received ${signal}. Shutting down gracefully...`);
-  server.close(() => {
-    console.log('[VisionRoot Backend] Server closed.');
+  server.close(async () => {
+    console.log('[VisionRoot Backend] HTTP server closed.');
+    await closePool();
+    console.log('[VisionRoot Backend] Database pool drained.');
     process.exit(0);
   });
 }

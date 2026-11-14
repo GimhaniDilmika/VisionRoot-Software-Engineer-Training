@@ -18,7 +18,9 @@
     "type-check": "npm run type-check:backend && npm run type-check:frontend",
     "lint:backend": "npm run lint --workspace=backend",
     "lint:frontend": "npm run lint --workspace=frontend",
-    "lint": "npm run lint:backend && npm run lint:frontend"
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "db:migrate": "npm run db:migrate --workspace=backend",
+    "db:seed": "npm run db:seed --workspace=backend"
   },
   "keywords": [
     "visionroot",
