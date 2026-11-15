@@ -110,4 +110,14 @@ export const requestApi = {
       body: JSON.stringify(payload),
     });
   },
+
+  /**
+   * GET /api/health
+   * Verifies actual live backend and PostgreSQL connectivity.
+   */
+  async checkHealth(): Promise<ApiResponse<{ status: string; database?: { status: string; latency_ms?: number } }>> {
+    return apiFetch<{ status: string; database?: { status: string; latency_ms?: number } }>('/health', {
+      method: 'GET',
+    });
+  },
 };

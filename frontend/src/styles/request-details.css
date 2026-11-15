@@ -1,0 +1,554 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   REQUEST DETAILS PAGE — Visual Enhancement Styles
+   Day 07 HCI UI/UX Refinement · Incremental Step 4
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Details Page Layout ────────────────────────────────────────────────────── */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Ticket Hero Header Card ────────────────────────────────────────────────── */
+.ticket-hero {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.ticket-hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ticket-hero-title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.ticket-hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-xs);
+  margin-bottom: 0.4rem;
+}
+
+.ticket-hero-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.1875rem;
+  font-weight: 800;
+  color: var(--color-navy);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.ticket-hero-id-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ticket-id-label {
+  font-size: 0.75rem;
+  color: var(--color-text-xs);
+  font-weight: 600;
+}
+
+.ticket-id-value {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: var(--color-navy);
+  background-color: var(--color-bg-subtle, #F1F5F9);
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  letter-spacing: 0.03em;
+  cursor: default;
+}
+
+.ticket-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-light, #DCFCE7);
+  border: 1px solid var(--color-primary-border, #BBF7D0);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.ticket-copy-btn:hover {
+  background-color: var(--color-primary-mid, #BBF7D0);
+}
+
+.ticket-copy-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.ticket-hero-badges {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+  .ticket-hero-top {
+    flex-direction: column;
+  }
+  .ticket-hero-badges {
+    justify-content: flex-start;
+  }
+}
+
+/* ── Lifecycle Stepper ─────────────────────────────────────────────────────── */
+.stepper-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.stepper-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.stepper-card-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.stepper-card-status-label {
+  font-size: 0.78125rem;
+  color: var(--color-text-subtle);
+}
+
+/* Revised stepper: horizontal track with flex + relative positioning */
+.stepper-v2 {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  margin: 0 0 1.5rem;
+}
+
+/* Horizontal connecting line behind nodes */
+.stepper-v2::before {
+  content: '';
+  position: absolute;
+  top: 17px;
+  left: calc(12.5% - 0px);  /* roughly node center of step 1 */
+  right: calc(12.5% - 0px);
+  height: 2px;
+  background: linear-gradient(to right, var(--color-primary) var(--stepper-progress, 0%), var(--color-border) var(--stepper-progress, 0%));
+  z-index: 0;
+}
+
+.stepper-v2-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.stepper-v2-node {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  border: 2.5px solid var(--color-border);
+  background-color: #FFFFFF;
+  color: var(--color-text-xs);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Completed step */
+.stepper-v2-step.sv-completed .stepper-v2-node {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+/* Active step */
+.stepper-v2-step.sv-active .stepper-v2-node {
+  background-color: #FFFFFF;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-mid, #BBF7D0);
+}
+
+/* Terminal (CLOSED and completed = all steps done) */
+.stepper-v2-step.sv-terminal .stepper-v2-node {
+  background-color: var(--color-navy);
+  border-color: var(--color-navy);
+  color: #FFFFFF;
+}
+
+/* Upcoming step */
+.stepper-v2-step.sv-upcoming .stepper-v2-node {
+  background-color: #F8FAFC;
+  border-color: var(--color-border);
+  color: var(--color-text-xs);
+}
+
+.stepper-v2-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-xs);
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.stepper-v2-step.sv-completed .stepper-v2-label,
+.stepper-v2-step.sv-active .stepper-v2-label {
+  color: var(--color-navy);
+}
+
+.stepper-v2-step.sv-terminal .stepper-v2-label {
+  color: var(--color-navy);
+}
+
+@media (max-width: 480px) {
+  .stepper-v2-label { font-size: 0.6rem; }
+  .stepper-v2-node  { width: 28px; height: 28px; font-size: 0.7rem; }
+  .stepper-v2::before { top: 13px; }
+}
+
+/* ── Status Update Panel ─────────────────────────────────────────────────────── */
+.status-update-panel {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.status-update-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.25rem;
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  border-bottom: 1px solid var(--color-primary-border, #BBF7D0);
+}
+
+.status-update-panel-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.status-update-panel-body {
+  padding: 1.125rem 1.25rem;
+}
+
+.status-transition-flow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  font-size: 0.84375rem;
+}
+
+.status-transition-from,
+.status-transition-to {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.status-transition-from {
+  background-color: #F1F5F9;
+  color: var(--color-navy);
+  border: 1px solid var(--color-border);
+}
+
+.status-transition-arrow {
+  font-size: 1rem;
+  color: var(--color-primary);
+  font-weight: 800;
+}
+
+.status-update-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-subtle);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.status-update-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Terminal (CLOSED) state panel */
+.status-terminal-panel {
+  background-color: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.status-terminal-icon {
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-navy);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.status-terminal-text h4 {
+  margin: 0 0 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.status-terminal-text p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-subtle);
+  line-height: 1.5;
+}
+
+/* ── Issue Description Card ──────────────────────────────────────────────────── */
+.issue-desc-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.issue-desc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.issue-desc-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.issue-desc-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.issue-desc-body {
+  padding: 1.25rem 1.5rem;
+  font-size: 0.90625rem;
+  color: var(--color-text-main, #334155);
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Metadata Sidebar Card ───────────────────────────────────────────────────── */
+.meta-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.meta-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.875rem 1.25rem;
+  background-color: #FAFAFA;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.meta-card-title {
+  margin: 0;
+  font-size: 0.84375rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.meta-card-body {
+  padding: 0;
+}
+
+.meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.meta-row:last-child {
+  border-bottom: none;
+}
+
+.meta-row-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-xs);
+}
+
+.meta-row-value {
+  font-size: 0.84375rem;
+  color: var(--color-navy);
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.meta-row-value code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.meta-row-value time {
+  color: var(--color-text-subtle);
+  font-size: 0.8125rem;
+}
+
+/* ── Loading Skeleton — Details Page ─────────────────────────────────────────── */
+.detail-skeleton-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .detail-skeleton-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Update Feedback Banners ─────────────────────────────────────────────────── */
+.update-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 7px;
+  font-size: 0.84375rem;
+  margin-bottom: 0.875rem;
+  line-height: 1.4;
+}
+
+.update-banner-success {
+  background-color: #F0FDF4;
+  border: 1px solid var(--color-primary-border, #BBF7D0);
+  color: var(--color-forest, #166534);
+}
+
+.update-banner-error {
+  background-color: #FFF1F2;
+  border: 1px solid #FECDD3;
+  color: #9F1239;
+}
+
+/* ── 404 Not Found Panel ──────────────────────────────────────────────────────── */
+.not-found-panel {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+  padding: 4rem 2rem;
+  text-align: center;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.not-found-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.not-found-title {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-navy);
+}
+
+.not-found-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-subtle);
+  margin: 0 auto 1.5rem;
+  max-width: 380px;
+  line-height: 1.6;
+}
