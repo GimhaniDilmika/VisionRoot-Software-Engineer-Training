@@ -3,7 +3,7 @@
 [![Training Duration](https://img.shields.io/badge/Duration-2%20Weeks%20%2F%2010%20Days-blue.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Role](https://img.shields.io/badge/Role-Trainee%20Software%20Engineer-green.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Monolith-orange.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
-[![Status](https://img.shields.io/badge/Status-Day%2006%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
+[![Status](https://img.shields.io/badge/Status-Day%2007%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Node Version](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-339933.svg?logo=nodedotjs)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg?logo=typescript)](https://www.typescriptlang.org)
 
@@ -11,7 +11,7 @@ Welcome to the **VisionRoot Trainee Software Engineer** 10-day training reposito
 
 This project follows a structured, learn-by-building pathway focused on practical web application development, software architecture, clean code, API engineering, database design, automated testing, security, and technical documentation.
 
-**Current Training Progress: Day 06 Completed — Database and Persistence**
+**Current Training Progress: Day 07 Completed — Full-Stack Integration and Business Workflows**
 
 ---
 
@@ -41,8 +41,8 @@ The system is designed around clearly separated frontend, API, business logic, a
 | Frontend | Next.js, React, TypeScript |
 | Backend | Node.js, Express.js, TypeScript |
 | Database | PostgreSQL |
-| Current Progress | Day 06 Completed |
-| Next Task | Day 07 — Full-Stack Integration |
+| Current Progress | Day 07 Completed |
+| Next Task | Day 08 — Automated Testing & Quality |
 
 ### Core Application Features
 
@@ -183,7 +183,8 @@ VisionRoot-Training/
     ├── Day-03/
     ├── Day-04/
     ├── Day-05/
-    └── Day-06/
+    ├── Day-06/
+    └── Day-07/
 ```
 
 ---
@@ -361,7 +362,7 @@ Include:
 | Day 04 | Frontend Architecture & UI | ✅ Completed | [evidence/Day-04/daily-log.md](evidence/Day-04/daily-log.md), [evidence/Day-04/PR_DESCRIPTION.md](evidence/Day-04/PR_DESCRIPTION.md) |
 | Day 05 | Backend API & Service Layer | ✅ Completed | [evidence/Day-05/daily-log.md](evidence/Day-05/daily-log.md), [evidence/Day-05/api-test-results.md](evidence/Day-05/api-test-results.md), [evidence/Day-05/PR_DESCRIPTION.md](evidence/Day-05/PR_DESCRIPTION.md) |
 | Day 06 | Database & Persistence | ✅ Completed | [evidence/Day-06/daily-log.md](evidence/Day-06/daily-log.md), [evidence/Day-06/database-test-results.md](evidence/Day-06/database-test-results.md), [evidence/Day-06/PR_DESCRIPTION.md](evidence/Day-06/PR_DESCRIPTION.md) |
-| Day 07 | Full-Stack Integration | ⏳ Planned | Frontend/API integration, business workflows |
+| Day 07 | Full-Stack Integration & Workflows | ✅ Completed | [evidence/Day-07/daily-log.md](evidence/Day-07/daily-log.md), [evidence/Day-07/workflow-test.md](evidence/Day-07/workflow-test.md), [evidence/Day-07/negative-test-results.md](evidence/Day-07/negative-test-results.md), [evidence/Day-07/browser-verification-checklist.md](evidence/Day-07/browser-verification-checklist.md), [evidence/Day-07/integration-bug-report.md](evidence/Day-07/integration-bug-report.md), [evidence/Day-07/PR_DESCRIPTION.md](evidence/Day-07/PR_DESCRIPTION.md) |
 | Day 08 | Automated Testing & Quality | ⏳ Planned | Unit tests, integration tests, debugging |
 | Day 09 | Security, Deployment & Operations | ⏳ Planned | Security review, deployment documentation |
 | Day 10 | Final Review, Demo & Handover | ⏳ Planned | Demo, review, final documentation |
@@ -961,26 +962,53 @@ Mastered relational schema implementation, connection pooling, SQL injection pre
 
 ---
 
-## 🔜 Day 07 — Full-Stack Integration
+## ✅ Day 07 — Full-Stack Integration and Business Workflows
 
-**Status: Planned**
+**Status: Completed**
 
-**Objective:** Connect the Next.js frontend client to the live Express.js REST API and PostgreSQL database, replacing mock services with real network requests.
+**Objective:** Connect the Next.js frontend client to the live Express.js REST API and PostgreSQL 18.6 database, completely replacing mock data while preserving 100% of existing architecture and database schema. Implement the approved VisionRoot Green + White SaaS UI redesign across all four interfaces, enforce the linear request lifecycle state machine, and verify end-to-end database persistence and error handling.
 
-### Planned Activities
+### Work Completed
 
-1. Connect the Next.js frontend to the Express API (`/api/requests`).
-2. Replace frontend mock service with live API client.
-3. Implement end-to-end request creation, listing, details view, and status updates.
-4. Verify error handling across the full stack.
-5. Record integration verification evidence.
+- **Live API Client & Environment Configuration:** Configured `frontend/.env.local` with `NEXT_PUBLIC_API_URL=http://localhost:5000/api` (git-ignored). Updated `frontend/src/features/requests/services/requestApi.ts` to query the live Express REST backend and added `checkHealth()` for dynamic database health probes.
+- **Mock Data Decoupling:** Retired frontend mock dependencies from all application routes (`/`, `/requests`, `/requests/new`, `/requests/[id]`), retaining `mockRequests.ts` strictly as an archived reference.
+- **Home Dashboard (`/`) Redesign:** Features 5 live PostgreSQL-backed metric cards (Total Volume, Open, In Progress, Resolved, Closed), a visual multi-segment status distribution chart using real API data percentages, a compact Recent Requests feed (strictly top 4 requests by creation date), and a visual lifecycle workflow card.
+- **All Requests (`/requests`) Redesign:** Professional enterprise table with column indexing (`#1`), shortened UUIDs with full tooltips, glowing status pills, directional priority badges, search field with clear button (`✕`), real-time match counter (`Showing X of Y requests`), one-click `Reset Filters` control, and mobile card view.
+- **New Request Form (`/requests/new`) Redesign:** Structured form card with green accent stripe, triage guidance banner, 3 labelled sections (*Request Information*, *Classification*, *Detailed Explanation*), shortened priority options (`Low`, `Medium`, `High`) preventing Windows text truncation, live character counters turning amber at 90% capacity, inline field error icons, form data preservation on submission failure, and accessible success confirmation panel.
+- **Request Details (`/requests/[id]`) Redesign:** Dedicated Ticket Hero card with category eyebrow, shortened UUID, and 1-click `Copy ID` button with 2-second visual feedback. 4-node lifecycle stepper with connected progress track and checkmarks (`✓`). Status update panel showing `current → next` workflow, dedicated terminal panel for `CLOSED` tickets, and dedicated 404 panel for missing requests.
+- **Strict Linear Lifecycle State Machine:** Enforced `OPEN → IN_PROGRESS → RESOLVED → CLOSED`. Irreversible terminal state `CLOSED` strictly rejects modifications with HTTP 400 `INVALID_STATE_TRANSITION`.
+- **Database Non-Pollution & Timestamp Invariant:** Confirmed that `updated_at` automatically updates in PostgreSQL while `created_at` is preserved. Negative tests confirmed zero garbage rows created.
+- **No New Migrations:** Verified that no new database migration was required; the Day 06 PostgreSQL schema fully satisfied all Day 07 requirements.
+- **Automated Regression Testing:** Executed Part 01 workflow API test suite (8/8 PASS) and Part 02 negative API test suite (8/8 PASS).
+- **Comprehensive Documentation:** Generated 6 detailed documentation files in `evidence/Day-07/`. Note: Visual browser screenshot captures remain pending manual capture by the trainee.
 
-### Expected Deliverables
+### Deliverables
 
-- Live API client integration in `frontend/`.
-- End-to-end user workflows from browser to database.
-- `evidence/Day-07/daily-log.md`.
-- `evidence/Day-07/PR_DESCRIPTION.md`.
+- `frontend/src/features/requests/services/requestApi.ts`
+- `frontend/src/components/layout/AppShell.tsx`
+- `frontend/src/app/page.tsx`
+- `frontend/src/app/requests/page.tsx`
+- `frontend/src/app/requests/new/page.tsx`
+- `frontend/src/app/requests/[id]/page.tsx`
+- `frontend/src/features/requests/components/RequestForm.tsx`
+- `frontend/src/features/requests/components/RequestList.tsx`
+- `frontend/src/features/requests/components/RequestCard.tsx`
+- `frontend/src/features/requests/components/RequestFilters.tsx`
+- `frontend/src/features/requests/components/StatusBadge.tsx`
+- `frontend/src/components/ui/PriorityBadge.tsx`
+- `frontend/src/styles/globals.css`
+- `frontend/src/styles/form-new-request.css`
+- `frontend/src/styles/request-details.css`
+- `evidence/Day-07/daily-log.md`
+- `evidence/Day-07/workflow-test.md`
+- `evidence/Day-07/negative-test-results.md`
+- `evidence/Day-07/browser-verification-checklist.md`
+- `evidence/Day-07/integration-bug-report.md`
+- `evidence/Day-07/PR_DESCRIPTION.md`
+
+### Learning Outcome
+
+Mastered end-to-end full-stack integration, asynchronous HTTP envelope parsing, client-side state preservation during network and validation errors, state machine synchronization between frontend and backend, PostgreSQL timestamp governance, and CORS security boundaries.
 
 ---
 
@@ -1005,19 +1033,20 @@ The project follows the security and professional standards outlined in the trai
 
 | Issue | Possible Cause | Suggested Solution |
 |---|---|---|
-| Backend port already in use | Another process uses port 5000 | Stop the conflicting process |
-| Frontend cannot connect to API | Backend is not running | Start `npm run dev:backend` |
-| Environment variable missing | Local `.env` not configured | Copy and configure `.env.example` |
-| PostgreSQL command not found | PostgreSQL is not in PATH | Add PostgreSQL binaries to PATH |
-| API returns 400 | Invalid request data | Review field validation rules |
-| API returns 404 | Requested resource does not exist | Verify the request ID and endpoint |
+| Backend port already in use | Another process uses port 5000 (`EADDRINUSE`) | Find and terminate conflicting process (`Get-NetTCPConnection -LocalPort 5000`) |
+| Frontend cannot connect to API | Backend is not running | Start backend with `npm run dev:backend` |
+| Environment variable missing | Local `.env` or `.env.local` not configured | Copy and configure `.env.example` templates |
+| PostgreSQL connection refused | PostgreSQL service is not running on port 5432 | Start PostgreSQL service |
+| Windows `EPERM` lock on `.next/trace` | Active dev server locks file during `npm run build` | Stop `npm run dev:frontend` before running production build |
+| API returns 400 | Invalid request data or state transition | Review data validation and state machine rules |
+| API returns 404 | Requested resource or UUID does not exist | Verify the request UUID and endpoint |
 | API returns 500 | Unexpected backend error | Review server logs without exposing secrets |
 
 ---
 
 ## 📊 Current Training Completion Summary
 
-**Completed:** 6 of 10 training days.
+**Completed:** 7 of 10 training days.
 
 ```text
 Day 01  ✅ Requirements and SDLC
@@ -1026,19 +1055,19 @@ Day 03  ✅ GitHub Workflow and Environment
 Day 04  ✅ Frontend Architecture and UI
 Day 05  ✅ Backend API and Service Layer
 Day 06  ✅ Database and Persistence
-Day 07  ⏳ Full-Stack Integration
+Day 07  ✅ Full-Stack Integration
 Day 08  ⏳ Automated Testing and Quality
 Day 09  ⏳ Security and Deployment
 Day 10  ⏳ Final Review and Handover
 ```
 
-**Overall Progress: 60% of the 10-day training roadmap completed.**
+**Overall Progress: 70% of the 10-day training roadmap completed.**
 
 ---
 
 ## 🏁 Conclusion
 
-The VisionRoot Service Request Management System training project has progressed through its first six development stages:
+The VisionRoot Service Request Management System training project has progressed through its first seven development stages:
 
 1. Requirements Analysis
 2. Architecture Design
@@ -1046,10 +1075,11 @@ The VisionRoot Service Request Management System training project has progressed
 4. Frontend Development
 5. Backend API and Service Layer
 6. Database and Persistence
+7. Full-Stack Integration and Business Workflows
 
-Day 06 establishes persistent relational storage in PostgreSQL, parameterized queries, and idempotent schema migrations.
+Day 07 connects the Next.js frontend to the live Express REST API and PostgreSQL database, enforces strict lifecycle state transitions, enhances all four user interfaces, and validates end-to-end persistence and negative validation.
 
-The next milestone is **Day 07 — Full-Stack Integration**, where the Next.js frontend will be connected to the live Express REST API to deliver end-to-end service request management.
+The next milestone is **Day 08 — Automated Testing & Quality**, focusing on unit tests, integration test suites, and automated test coverage.
 
 The overall development approach prioritizes understandable architecture, code maintainability, testability, and professional engineering documentation.
 
@@ -1061,4 +1091,4 @@ The overall development approach prioritizes understandable architecture, code m
 
 **Project:** Service Request Management System
 
-**Training Status:** Day 06 Completed
+**Training Status:** Day 07 Completed
