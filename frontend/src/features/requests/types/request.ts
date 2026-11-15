@@ -54,3 +54,14 @@ export interface RequestFilterOptions {
   category?: RequestCategory | 'ALL';
   searchQuery?: string;
 }
+
+/**
+ * Permitted status transitions matching the backend state machine.
+ * OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED
+ */
+export const ALLOWED_TRANSITIONS: Record<RequestStatus, RequestStatus[]> = {
+  OPEN: ['IN_PROGRESS'],
+  IN_PROGRESS: ['RESOLVED'],
+  RESOLVED: ['CLOSED'],
+  CLOSED: [],
+};

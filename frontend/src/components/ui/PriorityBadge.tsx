@@ -3,49 +3,44 @@ import { RequestPriority } from '../../features/requests/types/request';
 
 interface PriorityBadgeProps {
   priority: RequestPriority;
+  className?: string;
 }
 
 const cfg: Record<
   RequestPriority,
-  { label: string; textColor: string; bg: string; border: string; indicator: string }
+  { label: string; badgeClass: string; icon: string }
 > = {
   HIGH: {
     label: 'High',
-    textColor: '#BE123C',
-    bg: '#FFF1F2',
-    border: '#FECDD3',
-    indicator: '●',
+    badgeClass: 'priority-high',
+    icon: '↑',
   },
   MEDIUM: {
     label: 'Medium',
-    textColor: '#92400E',
-    bg: '#FFFBEB',
-    border: '#FCD34D',
-    indicator: '◐',
+    badgeClass: 'priority-medium',
+    icon: '•',
   },
   LOW: {
     label: 'Low',
-    textColor: '#065F46',
-    bg: '#F0FDF4',
-    border: '#86EFAC',
-    indicator: '○',
+    badgeClass: 'priority-low',
+    icon: '↓',
   },
 };
 
-export const PriorityBadge: React.FC<PriorityBadgeProps> = ({ priority }) => {
-  const c = cfg[priority];
+export const PriorityBadge: React.FC<PriorityBadgeProps> = ({ priority, className = '' }) => {
+  const c = cfg[priority] || {
+    label: priority,
+    badgeClass: 'priority-medium',
+    icon: '•',
+  };
+
   return (
     <span
-      className="badge"
-      style={{
-        color: c.textColor,
-        backgroundColor: c.bg,
-        border: `1px solid ${c.border}`,
-      }}
+      className={`priority-tag ${c.badgeClass} ${className}`.trim()}
       aria-label={`Priority: ${c.label}`}
     >
-      <span aria-hidden="true" style={{ fontSize: '0.6rem' }}>{c.indicator}</span>
-      {c.label}
+      <span aria-hidden="true" style={{ fontSize: '0.75rem', fontWeight: 800 }}>{c.icon}</span>
+      <span>{c.label}</span>
     </span>
   );
 };
