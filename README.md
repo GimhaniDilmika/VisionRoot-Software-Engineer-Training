@@ -3,7 +3,7 @@
 [![Training Duration](https://img.shields.io/badge/Duration-2%20Weeks%20%2F%2010%20Days-blue.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Role](https://img.shields.io/badge/Role-Trainee%20Software%20Engineer-green.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Monolith-orange.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
-[![Status](https://img.shields.io/badge/Status-Day%2007%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
+[![Status](https://img.shields.io/badge/Status-Day%2008%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Node Version](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-339933.svg?logo=nodedotjs)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg?logo=typescript)](https://www.typescriptlang.org)
 
@@ -11,7 +11,7 @@ Welcome to the **VisionRoot Trainee Software Engineer** 10-day training reposito
 
 This project follows a structured, learn-by-building pathway focused on practical web application development, software architecture, clean code, API engineering, database design, automated testing, security, and technical documentation.
 
-**Current Training Progress: Day 07 Completed — Full-Stack Integration and Business Workflows**
+**Current Training Progress: Day 08 Completed — Automated Testing, Debugging and Quality**
 
 ---
 
@@ -41,8 +41,8 @@ The system is designed around clearly separated frontend, API, business logic, a
 | Frontend | Next.js, React, TypeScript |
 | Backend | Node.js, Express.js, TypeScript |
 | Database | PostgreSQL |
-| Current Progress | Day 07 Completed |
-| Next Task | Day 08 — Automated Testing & Quality |
+| Current Progress | Day 08 Completed |
+| Next Task | Day 09 — Security, Deployment & Operations |
 
 ### Core Application Features
 
@@ -134,7 +134,18 @@ VisionRoot-Training/
 ├── backend/
 │   ├── package.json
 │   ├── tsconfig.json
+│   ├── jest.config.js
 │   ├── .env.example
+│   ├── tests/
+│   │   ├── setup.ts
+│   │   ├── mocks/
+│   │   │   └── mock-request-repository.ts
+│   │   ├── unit/
+│   │   │   ├── request-validation.unit.test.ts
+│   │   │   └── request-lifecycle.unit.test.ts
+│   │   └── integration/
+│   │       ├── health-api.test.ts
+│   │       └── requests-api.test.ts
 │   └── src/
 │       ├── app.ts
 │       ├── server.ts
@@ -164,8 +175,12 @@ VisionRoot-Training/
 ├── frontend/
 │   ├── package.json
 │   ├── tsconfig.json
+│   ├── jest.config.js
 │   ├── next.config.js
 │   ├── .env.example
+│   ├── tests/
+│   │   └── unit/
+│   │       └── form-validation.test.ts
 │   └── src/
 │       └── app/
 │           ├── layout.tsx
@@ -184,7 +199,13 @@ VisionRoot-Training/
     ├── Day-04/
     ├── Day-05/
     ├── Day-06/
-    └── Day-07/
+    ├── Day-07/
+    └── Day-08/
+        ├── daily-log.md
+        ├── test-results.md
+        ├── regression-test-results.md
+        ├── bug-investigation.md
+        └── PR_DESCRIPTION.md
 ```
 
 ---
@@ -265,14 +286,25 @@ http://localhost:3000
 
 | Command | Purpose |
 |---|---|
-| `npm install` | Install project dependencies |
+| `npm install` | Install all monorepo project dependencies |
 | `npm run db:migrate` | Execute version-controlled PostgreSQL schema migrations |
 | `npm run db:seed` | Seed idempotent demo service requests into PostgreSQL |
-| `npm run dev:backend` | Start Express backend |
-| `npm run dev:frontend` | Start Next.js frontend |
-| `npm run build` | Build frontend and backend |
-| `npm run type-check` | Check TypeScript types |
-| `npm run lint` | Check code quality |
+| `npm run dev:backend` | Start Express backend in development mode |
+| `npm run dev:frontend` | Start Next.js frontend in development mode |
+| `npm run build` | Build both backend and frontend applications |
+| `npm run build:backend` | Compile backend TypeScript to `backend/dist/` |
+| `npm run build:frontend` | Generate Next.js production build in `frontend/.next/` |
+| `npm run type-check` | Execute TypeScript checks across backend and frontend |
+| `npm run type-check:backend` | Type check backend with `tsc --noEmit` |
+| `npm run type-check:frontend` | Type check frontend with `tsc --noEmit` |
+| `npm run lint` | Run compiler checks across workspaces (`tsc --noEmit`) |
+| `npm run test:backend:unit` | Execute backend validation & state machine unit tests (77 tests) |
+| `npm run test:backend:integration` | Execute backend Supertest HTTP API integration tests (68 tests) |
+| `npm run test:backend:coverage` | Run backend tests with Istanbul code coverage instrumentation |
+| `npm run test:frontend:unit` | Execute frontend pure form-validation unit tests (35 tests) |
+| `npm run test:frontend:coverage` | Run frontend validation tests with coverage instrumentation |
+
+> **Code Quality & Linting Note:** `npm run lint` in the monorepo currently maps to `npm run lint:backend && npm run lint:frontend`, which executes strict TypeScript compiler diagnostics (`tsc --noEmit`). It does not run an independent ESLint / AST static analysis linter because ESLint is not installed in the workspace dependencies.
 
 ### Verify Backend Health
 
@@ -363,7 +395,7 @@ Include:
 | Day 05 | Backend API & Service Layer | ✅ Completed | [evidence/Day-05/daily-log.md](evidence/Day-05/daily-log.md), [evidence/Day-05/api-test-results.md](evidence/Day-05/api-test-results.md), [evidence/Day-05/PR_DESCRIPTION.md](evidence/Day-05/PR_DESCRIPTION.md) |
 | Day 06 | Database & Persistence | ✅ Completed | [evidence/Day-06/daily-log.md](evidence/Day-06/daily-log.md), [evidence/Day-06/database-test-results.md](evidence/Day-06/database-test-results.md), [evidence/Day-06/PR_DESCRIPTION.md](evidence/Day-06/PR_DESCRIPTION.md) |
 | Day 07 | Full-Stack Integration & Workflows | ✅ Completed | [evidence/Day-07/daily-log.md](evidence/Day-07/daily-log.md), [evidence/Day-07/workflow-test.md](evidence/Day-07/workflow-test.md), [evidence/Day-07/negative-test-results.md](evidence/Day-07/negative-test-results.md), [evidence/Day-07/browser-verification-checklist.md](evidence/Day-07/browser-verification-checklist.md), [evidence/Day-07/integration-bug-report.md](evidence/Day-07/integration-bug-report.md), [evidence/Day-07/PR_DESCRIPTION.md](evidence/Day-07/PR_DESCRIPTION.md) |
-| Day 08 | Automated Testing & Quality | ⏳ Planned | Unit tests, integration tests, debugging |
+| Day 08 | Automated Testing, Debugging & Quality | ✅ Completed | [evidence/Day-08/daily-log.md](evidence/Day-08/daily-log.md), [evidence/Day-08/test-results.md](evidence/Day-08/test-results.md), [evidence/Day-08/regression-test-results.md](evidence/Day-08/regression-test-results.md), [evidence/Day-08/bug-investigation.md](evidence/Day-08/bug-investigation.md), [evidence/Day-08/PR_DESCRIPTION.md](evidence/Day-08/PR_DESCRIPTION.md) |
 | Day 09 | Security, Deployment & Operations | ⏳ Planned | Security review, deployment documentation |
 | Day 10 | Final Review, Demo & Handover | ⏳ Planned | Demo, review, final documentation |
 
@@ -1012,6 +1044,58 @@ Mastered end-to-end full-stack integration, asynchronous HTTP envelope parsing, 
 
 ---
 
+## ✅ Day 08 — Automated Testing, Debugging and Quality
+
+**Status: Completed**
+
+**Objective:** Establish an automated testing harness across both backend and frontend workspaces using Jest, ts-jest, and Supertest; verify business validation rules and the lifecycle state machine; ensure 100% database isolation through in-memory test doubles; measure Istanbul code coverage; debug test harness issues; and achieve 100% executable test verification without modifying production behavior.
+
+### Work Completed
+
+- **Test Harness Infrastructure:** Configured Jest 30.5.2, `ts-jest` 29.4.15, and Supertest 7.3.2 across the monorepo. Used CommonJS configuration presets ([`backend/jest.config.js`](backend/jest.config.js), [`frontend/jest.config.js`](frontend/jest.config.js)) to avoid monorepo `ts-node` path resolution issues.
+- **In-Memory Repository Double & Database Isolation:** Created [`backend/tests/mocks/mock-request-repository.ts`](backend/tests/mocks/mock-request-repository.ts) providing an isolated in-memory implementation of the request repository interface. Test environment setup ([`backend/tests/setup.ts`](backend/tests/setup.ts)) sets `DB_NAME='visionroot_service_requests_test_mock'` and `NODE_ENV='test'`. The live PostgreSQL database (`visionroot_service_requests`) was never accessed or mutated.
+- **Backend Service Unit Testing (77 tests):**
+  - [`backend/tests/unit/request-validation.unit.test.ts`](backend/tests/unit/request-validation.unit.test.ts) (36 tests): Verified title boundaries (5–100 chars), description boundaries (10–1000 chars), whitespace trimming, category enums (`IT`, `Facilities`, `Other`), priority defaulting to `MEDIUM`, initial `OPEN` status, multi-field error collection, and store non-pollution.
+  - [`backend/tests/unit/request-lifecycle.unit.test.ts`](backend/tests/unit/request-lifecycle.unit.test.ts) (41 tests): Verified UUID validation, not-found behavior, 3 valid transitions (`OPEN → IN_PROGRESS → RESOLVED → CLOSED`), systematic 16-combination transition matrix (13 illegal transitions rejected with `InvalidStateTransitionError`), terminal `CLOSED` state modification prevention, and defensive race-condition invariant handling.
+- **Backend HTTP API Integration Testing (68 tests):**
+  - [`backend/tests/integration/health-api.test.ts`](backend/tests/integration/health-api.test.ts) (14 tests): Tested `GET /api/health` against healthy (HTTP 200) and degraded (HTTP 503 `SERVICE_UNAVAILABLE`) mocked database states using Supertest.
+  - [`backend/tests/integration/requests-api.test.ts`](backend/tests/integration/requests-api.test.ts) (54 tests): Tested all `/api/requests` endpoints in-process without starting network listeners, validating JSON response envelopes, filtering, and error handling.
+- **Frontend Form Validation Unit Testing (35 tests):**
+  - [`frontend/tests/unit/form-validation.test.ts`](frontend/tests/unit/form-validation.test.ts) (35 tests): Pure unit tests for `validateCreateRequest()` covering title, description, category, priority, and multi-field error aggregation without DOM or browser overhead.
+- **Full Automated Regression Suite:** **180/180 tests PASS (0 failures, 0 skipped)** across 5 test suites.
+- **Target Module Code Coverage:**
+  - `backend/src/modules/requests/service.ts`: **100.00% Line Coverage** (87/87 lines), 100% Statements, 96.87% Branches, 100% Functions.
+  - `frontend/src/features/requests/validation/requestValidation.ts`: **100.00% Coverage** across all metrics (28/28 statements, 22/22 branches, 1/1 functions, 28/28 lines).
+  - *Coverage Scope Notice: These percentages apply specifically to the tested business logic modules (`service.ts` and `requestValidation.ts`), not the entire monorepo.*
+- **Debugging & Accurate Defect Classification:**
+  - **`TEST-HARNESS-001` (Jest Mock Hoisting TDZ):** Resolved a compiler hoisting collision where `jest.mock()` ran before ES module `import` initialization. Corrected using lazy `require()` inside the mock factory closure. Explicitly classified as a **test harness configuration issue**, not a production code defect.
+  - **`DEFENSIVE-INV-001` (Defensive Race Condition):** Verified that `service.updateRequestStatus()` throws `NotFoundError` when `updateStatus()` returns `null` despite `findById()` finding the record initially. Explicitly classified as a **defensive invariant test**.
+  - **Training Guide Assessment:** Confirmed via Git history that no historical production code bugs were previously fixed in `service.ts`; therefore, the fixed-defect regression requirement remains **partially unmet / not applicable** in favor of comprehensive defensive invariant testing.
+- **Compiler & Build Verification:** Verified `npm run type-check:backend`, `npm run type-check:frontend`, `npm run build:backend` (`tsc`), and `npm run build:frontend` (`next build`) all complete with exit code 0.
+
+### Deliverables
+
+- `backend/jest.config.js`
+- `backend/tests/setup.ts`
+- `backend/tests/mocks/mock-request-repository.ts`
+- `backend/tests/unit/request-validation.unit.test.ts`
+- `backend/tests/unit/request-lifecycle.unit.test.ts`
+- `backend/tests/integration/health-api.test.ts`
+- `backend/tests/integration/requests-api.test.ts`
+- `frontend/jest.config.js`
+- `frontend/tests/unit/form-validation.test.ts`
+- `evidence/Day-08/daily-log.md`
+- `evidence/Day-08/test-results.md`
+- `evidence/Day-08/regression-test-results.md`
+- `evidence/Day-08/bug-investigation.md`
+- `evidence/Day-08/PR_DESCRIPTION.md`
+
+### Learning Outcome
+
+Mastered automated unit and integration testing architecture, in-memory repository doubles, state machine permutation testing, Istanbul code coverage instrumentation, Jest mock hoisting mechanics, and defensive programming verification.
+
+---
+
 ## 🔒 Security and Professional Development Standards
 
 The project follows the security and professional standards outlined in the training guide.
@@ -1046,7 +1130,7 @@ The project follows the security and professional standards outlined in the trai
 
 ## 📊 Current Training Completion Summary
 
-**Completed:** 7 of 10 training days.
+**Completed:** 8 of 10 training days.
 
 ```text
 Day 01  ✅ Requirements and SDLC
@@ -1056,18 +1140,18 @@ Day 04  ✅ Frontend Architecture and UI
 Day 05  ✅ Backend API and Service Layer
 Day 06  ✅ Database and Persistence
 Day 07  ✅ Full-Stack Integration
-Day 08  ⏳ Automated Testing and Quality
+Day 08  ✅ Automated Testing, Debugging and Quality
 Day 09  ⏳ Security and Deployment
 Day 10  ⏳ Final Review and Handover
 ```
 
-**Overall Progress: 70% of the 10-day training roadmap completed.**
+**Overall Progress: 80% of the 10-day training roadmap completed.**
 
 ---
 
 ## 🏁 Conclusion
 
-The VisionRoot Service Request Management System training project has progressed through its first seven development stages:
+The VisionRoot Service Request Management System training project has progressed through its first eight development stages:
 
 1. Requirements Analysis
 2. Architecture Design
@@ -1076,10 +1160,11 @@ The VisionRoot Service Request Management System training project has progressed
 5. Backend API and Service Layer
 6. Database and Persistence
 7. Full-Stack Integration and Business Workflows
+8. Automated Testing, Debugging and Quality
 
-Day 07 connects the Next.js frontend to the live Express REST API and PostgreSQL database, enforces strict lifecycle state transitions, enhances all four user interfaces, and validates end-to-end persistence and negative validation.
+Day 08 establishes a comprehensive automated testing harness with 180 automated tests (77 backend unit, 68 backend integration, 35 frontend unit), achieving 100% line coverage on core business logic modules (`service.ts` and `requestValidation.ts`) with complete isolation from the live PostgreSQL development database.
 
-The next milestone is **Day 08 — Automated Testing & Quality**, focusing on unit tests, integration test suites, and automated test coverage.
+The next milestone is **Day 09 — Security, Deployment & Operations**, focusing on security auditing, environment hardening, deployment pipelines, and operational monitoring.
 
 The overall development approach prioritizes understandable architecture, code maintainability, testability, and professional engineering documentation.
 
@@ -1091,4 +1176,4 @@ The overall development approach prioritizes understandable architecture, code m
 
 **Project:** Service Request Management System
 
-**Training Status:** Day 07 Completed
+**Training Status:** Day 08 Completed
