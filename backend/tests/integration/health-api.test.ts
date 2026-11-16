@@ -158,3 +158,61 @@ describe('GET /api/health — database unhealthy', () => {
     expect(typeof res.body.timestamp).toBe('string');
   });
 });
+
+// ---------------------------------------------------------------------------
+// GET /api/health — database outage error sanitization (SEC-02 regression)
+// ---------------------------------------------------------------------------
+
+describe('GET /api/health — production error sanitization (SEC-02)', () => {
+  const originalEnv = process.env.NODE_ENV;
+
+  afterEach(() => {
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  test('sanitizes internal database exception message in production mode', async () => {
+    process.env.NODE_ENV = 'production';
+    mockCheckDb.mockResolvedValueOnce({
+      connected: false,
+      database: 'visionroot_service_requests_test_mock',
+      error: 'password authentication failed for user "postgres" at 10.0.1.25:5432',
+    });
+
+    const res = await request(app).get('/api/health');
+
+    expect(res.status).toBe(503);
+    expect(res.body.success).toBe(false);
+    expect(res.body.error.code).toBe('SERVICE_UNAVAILABLE');
+
+    const dbDetail = res.body.error.details.find(
+      (d: { component: string }) => d.component === 'database'
+    );
+    expect(dbDetail).toBeDefined();
+    expect(dbDetail.status).toBe('disconnected');
+    // Verify sanitized generic message
+    expect(dbDetail.error).toBe('Database connection unavailable');
+    // Verify zero information leakage
+    expect(dbDetail.error).not.toContain('password');
+    expect(dbDetail.error).not.toContain('postgres');
+    expect(dbDetail.error).not.toContain('10.0.1.25');
+  });
+
+  test('masks credentials in error message during non-production mode', async () => {
+    process.env.NODE_ENV = 'development';
+    mockCheckDb.mockResolvedValueOnce({
+      connected: false,
+      database: 'visionroot_service_requests_test_mock',
+      error: 'failed to connect to postgresql://admin:superSecret999@db-internal:5432/db',
+    });
+
+    const res = await request(app).get('/api/health');
+
+    expect(res.status).toBe(503);
+    const dbDetail = res.body.error.details.find(
+      (d: { component: string }) => d.component === 'database'
+    );
+    expect(dbDetail).toBeDefined();
+    expect(dbDetail.error).not.toContain('superSecret999');
+    expect(dbDetail.error).toContain(':***@');
+  });
+});

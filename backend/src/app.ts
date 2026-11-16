@@ -18,6 +18,18 @@ dotenv.config();
 
 const app = express();
 
+// ── Security Hardening (Day 09) ──────────────────────────────────────────────
+// 1. Disable server banner to prevent technology fingerprinting
+app.disable('x-powered-by');
+
+// 2. Set defensive security response headers
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
 // ── Cross-cutting middleware ─────────────────────────────────────────────────
 app.use(
   cors({
@@ -50,6 +62,16 @@ app.get('/api/health', async (_req, res) => {
   }
 
   // Graceful degradation / service unavailable if database connection fails
+  const isProduction = process.env.NODE_ENV === 'production';
+  const rawError = dbHealth.error || 'Connection to PostgreSQL database failed';
+  // Guard against any accidental credentials in error string in non-production
+  const safeDevError = rawError
+    .replace(/password=[^&;\s]+/gi, 'password=***')
+    .replace(/:([^:@\s]+)@/g, ':***@');
+  const sanitizedError = isProduction
+    ? 'Database connection unavailable'
+    : safeDevError;
+
   res.status(503).json({
     success: false,
     error: {
@@ -59,7 +81,7 @@ app.get('/api/health', async (_req, res) => {
         {
           component: 'database',
           status: 'disconnected',
-          error: dbHealth.error || 'Connection to PostgreSQL database failed',
+          error: sanitizedError,
         },
       ],
     },

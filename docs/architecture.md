@@ -259,3 +259,30 @@ backend/
   2. Automated ESLint import restrictions disallowing direct database imports outside `repository.ts`.
   3. Continuous pull request reviews using the VisionRoot PR checklist requiring reviewers to verify layer isolation before approving code changes.
 
+---
+
+## 8. Environment Configuration and Secrets Governance
+
+### 8.1 Environment Variables Reference
+
+| Variable | Scope | Required / Default | Purpose |
+| :--- | :--- | :--- | :--- |
+| `PORT` | Backend | Optional (`5000`) | Network port for the Express HTTP server. |
+| `NODE_ENV` | Backend | Optional (`development`) | Runtime environment (`development`, `production`, `test`). In production, detailed stack traces are suppressed in error envelopes. |
+| `CORS_ORIGIN` | Backend | Optional (`http://localhost:3000`) | Allowed client origin for CORS headers with credentials. Must match frontend deployment origin. |
+| `DB_HOST` | Backend | Optional (`localhost`) | PostgreSQL server host. |
+| `DB_PORT` | Backend | Optional (`5432`) | PostgreSQL server network port. |
+| `DB_NAME` | Backend | Optional (`visionroot_service_requests`) | Target database name. |
+| `DB_USER` | Backend | Optional (`postgres`) | Database connection user. |
+| `DB_PASSWORD` | Backend | Required (no default) | Database user password. Must never be committed to Git. |
+| `DB_MAX_CONNECTIONS` | Backend | Optional (`20`) | PostgreSQL connection pool maximum client count. |
+| `DB_IDLE_TIMEOUT_MS` | Backend | Optional (`30000`) | Client idle duration before pool cleanup (milliseconds). |
+| `DB_CONNECTION_TIMEOUT_MS` | Backend | Optional (`5000`) | Database connection establishment timeout (milliseconds). |
+| `DATABASE_URL` | Backend | Optional | Consolidated PostgreSQL connection string. When provided, takes precedence over discrete `DB_*` variables. |
+| `NEXT_PUBLIC_API_URL` | Frontend | Optional (`http://localhost:5000/api`) | Base URL for REST API requests dispatched from Next.js browser client. |
+
+### 8.2 Secrets Safety and Git Hygiene
+- **Strict Git Exclusion:** `.env`, `.env.*`, and `.env.local` files are ignored via root `.gitignore`. Only `.env.example` templates with sanitized placeholders are committed.
+- **Client Bundle Protection:** Only variables explicitly prefixed with `NEXT_PUBLIC_` are exposed to the frontend browser bundle. Database credentials, API secrets, and private keys must never use this prefix.
+- **Audit Verification:** Git history and tracked files are audited to ensure zero accidental credential leakage.
+
