@@ -3,7 +3,7 @@
 [![Training Duration](https://img.shields.io/badge/Duration-2%20Weeks%20%2F%2010%20Days-blue.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Role](https://img.shields.io/badge/Role-Trainee%20Software%20Engineer-green.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Architecture](https://img.shields.io/badge/Architecture-Modular%20Monolith-orange.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
-[![Status](https://img.shields.io/badge/Status-Day%2008%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
+[![Status](https://img.shields.io/badge/Status-Day%2009%20Completed-brightgreen.svg)](https://github.com/GimhaniDilmika/VisionRoot-Software-Engineer-Training)
 [![Node Version](https://img.shields.io/badge/Node.js-%3E%3D20.0.0-339933.svg?logo=nodedotjs)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg?logo=typescript)](https://www.typescriptlang.org)
 
@@ -11,7 +11,7 @@ Welcome to the **VisionRoot Trainee Software Engineer** 10-day training reposito
 
 This project follows a structured, learn-by-building pathway focused on practical web application development, software architecture, clean code, API engineering, database design, automated testing, security, and technical documentation.
 
-**Current Training Progress: Day 08 Completed — Automated Testing, Debugging and Quality**
+**Current Training Progress: Day 09 Completed — Security, Deployment and Operations**
 
 ---
 
@@ -41,8 +41,8 @@ The system is designed around clearly separated frontend, API, business logic, a
 | Frontend | Next.js, React, TypeScript |
 | Backend | Node.js, Express.js, TypeScript |
 | Database | PostgreSQL |
-| Current Progress | Day 08 Completed |
-| Next Task | Day 09 — Security, Deployment & Operations |
+| Current Progress | Day 09 Completed |
+| Next Task | Day 10 — Final Review, Demo & Handover |
 
 ### Core Application Features
 
@@ -396,7 +396,7 @@ Include:
 | Day 06 | Database & Persistence | ✅ Completed | [evidence/Day-06/daily-log.md](evidence/Day-06/daily-log.md), [evidence/Day-06/database-test-results.md](evidence/Day-06/database-test-results.md), [evidence/Day-06/PR_DESCRIPTION.md](evidence/Day-06/PR_DESCRIPTION.md) |
 | Day 07 | Full-Stack Integration & Workflows | ✅ Completed | [evidence/Day-07/daily-log.md](evidence/Day-07/daily-log.md), [evidence/Day-07/workflow-test.md](evidence/Day-07/workflow-test.md), [evidence/Day-07/negative-test-results.md](evidence/Day-07/negative-test-results.md), [evidence/Day-07/browser-verification-checklist.md](evidence/Day-07/browser-verification-checklist.md), [evidence/Day-07/integration-bug-report.md](evidence/Day-07/integration-bug-report.md), [evidence/Day-07/PR_DESCRIPTION.md](evidence/Day-07/PR_DESCRIPTION.md) |
 | Day 08 | Automated Testing, Debugging & Quality | ✅ Completed | [evidence/Day-08/daily-log.md](evidence/Day-08/daily-log.md), [evidence/Day-08/test-results.md](evidence/Day-08/test-results.md), [evidence/Day-08/regression-test-results.md](evidence/Day-08/regression-test-results.md), [evidence/Day-08/bug-investigation.md](evidence/Day-08/bug-investigation.md), [evidence/Day-08/PR_DESCRIPTION.md](evidence/Day-08/PR_DESCRIPTION.md) |
-| Day 09 | Security, Deployment & Operations | ⏳ Planned | Security review, deployment documentation |
+| Day 09 | Security, Deployment & Operations | ✅ Completed | [evidence/Day-09/daily-log.md](evidence/Day-09/daily-log.md), [evidence/Day-09/security-checklist.md](evidence/Day-09/security-checklist.md), [evidence/Day-09/deployment-verification.md](evidence/Day-09/deployment-verification.md), [evidence/Day-09/operations-test-results.md](evidence/Day-09/operations-test-results.md), [evidence/Day-09/PR_DESCRIPTION.md](evidence/Day-09/PR_DESCRIPTION.md), [docs/deployment.md](docs/deployment.md) |
 | Day 10 | Final Review, Demo & Handover | ⏳ Planned | Demo, review, final documentation |
 
 ---
@@ -1096,6 +1096,64 @@ Mastered automated unit and integration testing architecture, in-memory reposito
 
 ---
 
+## ✅ Day 09 — Security, Deployment and Operations
+
+**Status: Completed**
+
+**Objective:** Audit application security posture; implement defense-in-depth Express security hardening (suppress `X-Powered-By`, inject defensive headers); standardize safe environment configuration templates; author a complete production deployment runbook; verify production builds and startup commands; test health checks against both live PostgreSQL and simulated failure states; verify logging non-leakage and graceful shutdown; resolve confirmed security finding SEC-02; and maintain complete database isolation in automated tests.
+
+### Work Completed
+
+- **Minimal Express Security Hardening:**
+  - Injected `app.disable('x-powered-by')` into [`backend/src/app.ts`](backend/src/app.ts) to eliminate server technology stack fingerprinting.
+  - Added global middleware setting defensive HTTP headers: `X-Content-Type-Options: nosniff` (MIME sniffing defense), `X-Frame-Options: DENY` (clickjacking defense), and `Referrer-Policy: strict-origin-when-cross-origin` (cross-origin leakage prevention).
+  - Preserved existing CORS behavior, allowing credentials and reflecting configured frontend client origins.
+- **Automated Security Headers Test Suite (13 tests):**
+  - Created [`backend/tests/integration/security-headers.test.ts`](backend/tests/integration/security-headers.test.ts) covering header suppression (`X-Powered-By` absent), header presence on success (200, 201), client error (400, 404), server error (503), and CORS preflight (OPTIONS 204) routes.
+- **Environment Configuration & Secrets Safety:**
+  - Audited `.gitignore` to ensure `.env`, `.env.*`, and `.env.local` are strictly excluded from version control.
+  - Performed an exhaustive Git history audit (`git log --all -p`) confirming zero private keys, API keys, or production passwords exist in tracked files or commit history.
+  - Standardized sanitized example templates across workspaces: [`.env.example`](.env.example) (root), [`backend/.env.example`](backend/.env.example), and [`frontend/.env.example`](frontend/.env.example).
+  - Added Section 8 (Environment Configuration and Secrets Governance) to [`docs/architecture.md`](docs/architecture.md).
+- **Production Deployment Runbook & Scripts:**
+  - Authored [`docs/deployment.md`](docs/deployment.md) covering prerequisites (Node.js >= 20.0, npm >= 10.0, PostgreSQL >= 15.0), clean setup, transactional migrations (`npm run db:migrate`), seeding (`npm run db:seed`), production compilation, PM2 process management, database backups (`pg_dump`/`pg_restore`), and troubleshooting.
+  - Updated root [`package.json`](package.json) with standardized operational scripts: `start:backend` (`node dist/server.js`), `start:frontend` (`next start`), and `test` (`npm run test:backend && npm run test:frontend:unit`).
+- **Production-Like Startup & Operations Verification:**
+  - Verified compiled backend production startup on port 5098 against live PostgreSQL (`localhost:5432`): verified HTTP 200 health probe with 3ms latency and defensive security headers.
+  - Verified compiled frontend production startup on port 3098: verified HTTP 200 response with 16.8 KB rendered page.
+  - Created [`backend/tests/unit/operations.unit.test.ts`](backend/tests/unit/operations.unit.test.ts) with 8 focused tests covering `checkDatabaseConnection`, `closePool` graceful shutdown, production error sanitization, and request logger non-leakage.
+- **Remediation of Confirmed Security Finding SEC-02:**
+  - Identified that `GET /api/health` HTTP 503 responses previously exposed raw PostgreSQL exception strings in `error.details`.
+  - Updated [`backend/src/app.ts`](backend/src/app.ts) to sanitize production error envelopes to `'Database connection unavailable'` when `NODE_ENV === 'production'`, masking credentials (`:***@`) in non-production environments.
+  - Added 2 integration regression tests in [`backend/tests/integration/health-api.test.ts`](backend/tests/integration/health-api.test.ts) verifying production error sanitization under simulated database outages.
+- **Unresolved Architectural Limitation (High Risk):**
+  - The application deliberately omits User/Admin login, registration, JWT tokens, and RBAC in accordance with the training syllabus scope.
+  - Mandatory deployment boundary: the application must NOT be exposed to the public internet without an authenticating reverse proxy (e.g. NGINX with OAuth2-Proxy or Cloudflare Access).
+- **Full Automated Regression Suite:** **203/203 tests PASS (0 failures, 0 skipped)** across 7 test suites.
+- **Compiler & Build Verification:** Verified `npm run type-check:backend`, `npm run type-check:frontend`, and `npm run build` all pass with exit code 0.
+
+### Deliverables
+
+- `backend/src/app.ts` (security headers & SEC-02 sanitization)
+- `backend/tests/integration/security-headers.test.ts` (13 security tests)
+- `backend/tests/unit/operations.unit.test.ts` (8 operations tests)
+- `backend/tests/integration/health-api.test.ts` (2 SEC-02 regression tests)
+- `.env.example`, `backend/.env.example`, `frontend/.env.example`
+- `docs/architecture.md` (Section 8 environment reference)
+- `docs/deployment.md` (production deployment runbook)
+- `package.json` (`start:backend`, `start:frontend`, `test` scripts)
+- `evidence/Day-09/security-checklist.md`
+- `evidence/Day-09/deployment-verification.md`
+- `evidence/Day-09/operations-test-results.md`
+- `evidence/Day-09/daily-log.md`
+- `evidence/Day-09/PR_DESCRIPTION.md`
+
+### Learning Outcome
+
+Mastered HTTP defense-in-depth security hardening, environment variable and secrets governance, operational health probes and graceful degradation, production build packaging and process management, graceful database connection pool shutdown, and security finding remediation.
+
+---
+
 ## 🔒 Security and Professional Development Standards
 
 The project follows the security and professional standards outlined in the training guide.
@@ -1130,7 +1188,7 @@ The project follows the security and professional standards outlined in the trai
 
 ## 📊 Current Training Completion Summary
 
-**Completed:** 8 of 10 training days.
+**Completed:** 9 of 10 training days.
 
 ```text
 Day 01  ✅ Requirements and SDLC
@@ -1141,17 +1199,17 @@ Day 05  ✅ Backend API and Service Layer
 Day 06  ✅ Database and Persistence
 Day 07  ✅ Full-Stack Integration
 Day 08  ✅ Automated Testing, Debugging and Quality
-Day 09  ⏳ Security and Deployment
+Day 09  ✅ Security, Deployment and Operations
 Day 10  ⏳ Final Review and Handover
 ```
 
-**Overall Progress: 80% of the 10-day training roadmap completed.**
+**Overall Progress: 90% of the 10-day training roadmap completed.**
 
 ---
 
 ## 🏁 Conclusion
 
-The VisionRoot Service Request Management System training project has progressed through its first eight development stages:
+The VisionRoot Service Request Management System training project has progressed through its first nine development stages:
 
 1. Requirements Analysis
 2. Architecture Design
@@ -1161,12 +1219,13 @@ The VisionRoot Service Request Management System training project has progressed
 6. Database and Persistence
 7. Full-Stack Integration and Business Workflows
 8. Automated Testing, Debugging and Quality
+9. Security, Deployment and Operations
 
-Day 08 establishes a comprehensive automated testing harness with 180 automated tests (77 backend unit, 68 backend integration, 35 frontend unit), achieving 100% line coverage on core business logic modules (`service.ts` and `requestValidation.ts`) with complete isolation from the live PostgreSQL development database.
+Day 09 establishes minimal Express defense-in-depth security hardening (`nosniff`, `DENY`, `strict-origin-when-cross-origin`, `X-Powered-By` suppression), sanitized environment configuration templates, an end-to-end production deployment runbook ([`docs/deployment.md`](docs/deployment.md)), operational startup verification on live PostgreSQL, health probe error sanitization (SEC-02), and a 203-test automated regression harness (85 backend unit, 83 backend integration, 35 frontend unit).
 
-The next milestone is **Day 09 — Security, Deployment & Operations**, focusing on security auditing, environment hardening, deployment pipelines, and operational monitoring.
+The final milestone is **Day 10 — Final Review, Demo & Handover**, focusing on end-to-end user acceptance testing, final architectural review, and training completion handover.
 
-The overall development approach prioritizes understandable architecture, code maintainability, testability, and professional engineering documentation.
+The overall development approach prioritizes understandable architecture, code maintainability, testability, security, and professional engineering documentation.
 
 ---
 
@@ -1176,4 +1235,4 @@ The overall development approach prioritizes understandable architecture, code m
 
 **Project:** Service Request Management System
 
-**Training Status:** Day 08 Completed
+**Training Status:** Day 09 Completed
