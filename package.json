@@ -19,6 +19,12 @@
     "lint:backend": "npm run lint --workspace=backend",
     "lint:frontend": "npm run lint --workspace=frontend",
     "lint": "npm run lint:backend && npm run lint:frontend",
+    "test:backend": "npm run test --workspace=backend",
+    "test:backend:unit": "npm run test:unit --workspace=backend",
+    "test:backend:integration": "npm run test:integration --workspace=backend",
+    "test:backend:coverage": "npm run test:coverage --workspace=backend",
+    "test:frontend:unit": "npm run test:unit --workspace=frontend",
+    "test:frontend:coverage": "npm run test:coverage --workspace=frontend",
     "db:migrate": "npm run db:migrate --workspace=backend",
     "db:seed": "npm run db:seed --workspace=backend"
   },
